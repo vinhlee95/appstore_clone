@@ -48,6 +48,16 @@ class SearchResultCell: UICollectionViewCell {
         return button
     }()
     
+    lazy var screenshotImageView1 = self.createScreenshotImageView()
+    lazy var screenshotImageView2 = self.createScreenshotImageView()
+    lazy var screenshotImageView3 = self.createScreenshotImageView()
+    
+    fileprivate func createScreenshotImageView() -> UIImageView {
+        let iv = UIImageView()
+        iv.backgroundColor = .blue
+        return iv
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupViews()
@@ -55,13 +65,29 @@ class SearchResultCell: UICollectionViewCell {
     
     fileprivate func setupViews() {
         let labelStackView = setupLabelStackView()
-        let stackView = UIStackView(arrangedSubviews: [
+        let infoStackView = UIStackView(arrangedSubviews: [
             imageView,
             labelStackView,
             getButton
         ])
+        infoStackView.spacing = 12
+        infoStackView.alignment = .top
+        
+        let screenshotStackView = UIStackView(arrangedSubviews: [
+            screenshotImageView1,
+            screenshotImageView2,
+            screenshotImageView3
+        ])
+        screenshotStackView.spacing = 8
+        screenshotStackView.distribution = .fillEqually
+        
+        let stackView = UIStackView(arrangedSubviews: [
+            infoStackView,
+            screenshotStackView
+        ])
+        stackView.axis = .vertical
         stackView.spacing = 12
-        stackView.alignment = .top
+        
         addSubview(stackView)
         stackView.fillSuperview(padding: .init(top: 0, left: 12, bottom: 0, right: 12))
     }
