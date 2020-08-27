@@ -10,11 +10,33 @@ import UIKit
 
 class AppSearchController: UICollectionViewController {
     private let cellId = "cellId"
+    private let iTunesSearchUrl = "https://itunes.apple.com/search"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
+        fetchApps()
+    }
+    
+    fileprivate func fetchApps() {
+        let urlString = "\(iTunesSearchUrl)?term=instagram&entity=software"
+        guard let url = URL(string: urlString) else {return}
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            if let error = error {
+                print("Error in fetching iTunes apps", error)
+                return
+            }
+            
+            guard let data = data else {return}
+            do {
+                let searchResult = try JSONDecoder().decode(SearchResult.self, from: data)
+                searchResult.results.forEach({print($0.trackName, $0.primaryGenreName)})
+            } catch {
+                print("Error in decoding JSON search result", error)
+            }
+            
+        }.resume()
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {

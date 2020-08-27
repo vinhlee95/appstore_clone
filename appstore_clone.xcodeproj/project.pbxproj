@@ -16,6 +16,7 @@
 		1B57D6B524F611E500497C44 /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6B424F611E500497C44 /* SearchResultCell.swift */; };
 		1B57D6B824F6136F00497C44 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6B724F6136F00497C44 /* Extensions.swift */; };
 		1B57D6BA24F7524300497C44 /* VerticalStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6B924F7524300497C44 /* VerticalStackView.swift */; };
+		1B57D6BD24F75D0D00497C44 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6BC24F75D0D00497C44 /* SearchResult.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		1B57D6B424F611E500497C44 /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
 		1B57D6B724F6136F00497C44 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		1B57D6B924F7524300497C44 /* VerticalStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalStackView.swift; sourceTree = "<group>"; };
+		1B57D6BC24F75D0D00497C44 /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		1B57D69924F4AE0700497C44 /* appstore_clone */ = {
 			isa = PBXGroup;
 			children = (
+				1B57D6BB24F75D0000497C44 /* Model */,
 				1B57D6B624F6136200497C44 /* Helpers */,
 				1B57D6B324F611D000497C44 /* Views */,
 				1B57D6AE24F4AEBC00497C44 /* ViewControllers */,
@@ -98,6 +101,14 @@
 				1B57D6B924F7524300497C44 /* VerticalStackView.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		1B57D6BB24F75D0000497C44 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				1B57D6BC24F75D0D00497C44 /* SearchResult.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -170,6 +181,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				1B57D6B024F4AED000497C44 /* BaseTabBarController.swift in Sources */,
+				1B57D6BD24F75D0D00497C44 /* SearchResult.swift in Sources */,
 				1B57D6B224F4C2CC00497C44 /* AppSearchController.swift in Sources */,
 				1B57D69F24F4AE0700497C44 /* ViewController.swift in Sources */,
 				1B57D69B24F4AE0700497C44 /* AppDelegate.swift in Sources */,
