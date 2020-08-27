@@ -81,25 +81,21 @@ class SearchResultCell: UICollectionViewCell {
         screenshotStackView.spacing = 8
         screenshotStackView.distribution = .fillEqually
         
-        let stackView = UIStackView(arrangedSubviews: [
+        let stackView = VerticalStackView(arrangedSubViews: [
             infoStackView,
             screenshotStackView
-        ])
-        stackView.axis = .vertical
-        stackView.spacing = 12
+        ], spacing: 12)
         
         addSubview(stackView)
         stackView.fillSuperview(padding: .init(top: 0, left: 12, bottom: 0, right: 12))
     }
     
     fileprivate func setupLabelStackView() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [
+        let stackView = VerticalStackView(arrangedSubViews: [
             nameLabel,
             categoryLabel,
             ratingLabel
-        ])
-        stackView.axis = .vertical
-        stackView.spacing = 8
+        ], spacing: 8)
         return stackView
     }
     
