@@ -18,11 +18,12 @@ class SearchResultCell: UICollectionViewCell {
             ratingLabel.text = "\(appData.averageUserRating ?? 0)"
             let logoImageUrl = URL(string: appData.artworkUrl100)
             logoImageView.sd_setImage(with: logoImageUrl)
+            screenshotImageView1.sd_setImage(with: URL(string: appData.screenshotUrls[0]))
             if appData.screenshotUrls.count > 1 {
-                screenshotImageView1.sd_setImage(with: URL(string: appData.screenshotUrls[0]))
+                screenshotImageView2.sd_setImage(with: URL(string: appData.screenshotUrls[1]))
             }
             if appData.screenshotUrls.count > 2 {
-                screenshotImageView2.sd_setImage(with: URL(string: appData.screenshotUrls[1]))
+                screenshotImageView3.sd_setImage(with: URL(string: appData.screenshotUrls[2]))
             }
         }
     }
