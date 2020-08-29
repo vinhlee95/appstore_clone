@@ -16,9 +16,15 @@ class AppSearchController: UICollectionViewController {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
+        setupSearchBar()
         fetchApps()
     }
     
+    fileprivate func setupSearchBar() {
+        navigationItem.searchController = UISearchController(searchResultsController: nil)
+        navigationItem.searchController?.searchBar.delegate = self
+    }
+        
     fileprivate func fetchApps() {
         NetworkService.shared.fetchApps { (results, error) in
             if error != nil {
@@ -58,5 +64,11 @@ extension AppSearchController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return 20
+    }
+}
+
+extension AppSearchController: UISearchBarDelegate {
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        print(searchText)
     }
 }
