@@ -16,8 +16,9 @@ class SearchResultCell: UICollectionViewCell {
             nameLabel.text = appData.trackName
             categoryLabel.text = appData.primaryGenreName
             ratingLabel.text = "\(appData.averageUserRating ?? 0)"
-            let logoImageUrl = URL(string: appData.artworkUrl100)
-            logoImageView.sd_setImage(with: logoImageUrl)
+            
+            logoImageView.sd_setImage(with: URL(string: appData.artworkUrl100))
+            
             screenshotImageView1.sd_setImage(with: URL(string: appData.screenshotUrls[0]))
             if appData.screenshotUrls.count > 1 {
                 screenshotImageView2.sd_setImage(with: URL(string: appData.screenshotUrls[1]))
@@ -117,7 +118,8 @@ class SearchResultCell: UICollectionViewCell {
             nameLabel,
             categoryLabel,
             ratingLabel
-        ], spacing: 8)
+        ], spacing: 4)
+        stackView.distribution = .fillEqually
         return stackView
     }
     
