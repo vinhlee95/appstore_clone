@@ -10,7 +10,6 @@ import UIKit
 
 class AppSearchController: UICollectionViewController {
     private let cellId = "cellId"
-    private let iTunesSearchUrl = "https://itunes.apple.com/search"
     private var appResults = [Result]()
     
     override func viewDidLoad() {
@@ -21,26 +20,16 @@ class AppSearchController: UICollectionViewController {
     }
     
     fileprivate func fetchApps() {
-        let urlString = "\(iTunesSearchUrl)?term=instagram&entity=software"
-        guard let url = URL(string: urlString) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error in fetching iTunes apps", error)
+        NetworkService.shared.fetchApps { (results, error) in
+            if error != nil {
                 return
             }
             
-            guard let data = data else {return}
-            do {
-                let searchResult = try JSONDecoder().decode(SearchResult.self, from: data)
-                self.appResults = searchResult.results
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            } catch {
-                print("Error in decoding JSON search result", error)
+            self.appResults = results
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
             }
-            
-        }.resume()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
