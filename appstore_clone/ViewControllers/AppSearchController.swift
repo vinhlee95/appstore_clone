@@ -11,31 +11,34 @@ import UIKit
 class AppSearchController: UICollectionViewController {
     private let cellId = "cellId"
     private var appResults = [Result]()
-    
+    private var timer: Timer?
+
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
         setupSearchBar()
-        fetchApps()
+    }
+    
+    fileprivate func debounceFetchApps(searchText: String) {
+        // Debounce making API request to fetch apps
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
+            NetworkService.shared.fetchApps(searchText: searchText) { (results, error) in
+                if error != nil {
+                    return
+                }
+                self.appResults = results
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
+            }
+        })
     }
     
     fileprivate func setupSearchBar() {
         navigationItem.searchController = UISearchController(searchResultsController: nil)
         navigationItem.searchController?.searchBar.delegate = self
-    }
-        
-    fileprivate func fetchApps() {
-        NetworkService.shared.fetchApps { (results, error) in
-            if error != nil {
-                return
-            }
-            
-            self.appResults = results
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -69,6 +72,11 @@ extension AppSearchController: UICollectionViewDelegateFlowLayout {
 
 extension AppSearchController: UISearchBarDelegate {
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        print(searchText)
+        if searchText == "" {
+            self.appResults = []
+            self.collectionView.reloadData()
+            return
+        }
+        self.debounceFetchApps(searchText: searchText)
     }
 }

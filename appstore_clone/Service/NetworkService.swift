@@ -12,8 +12,8 @@ class NetworkService {
     private let iTunesSearchUrl = "https://itunes.apple.com/search"
     static let shared = NetworkService() // Singleton
     
-    func fetchApps(completion: @escaping ([Result], Error?) -> ()) {
-        let urlString = "\(iTunesSearchUrl)?term=instagram&entity=software"
+    func fetchApps(searchText: String = "", completion: @escaping ([Result], Error?) -> ()) {
+        let urlString = "\(iTunesSearchUrl)?term=\(searchText)&entity=software"
         guard let url = URL(string: urlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
