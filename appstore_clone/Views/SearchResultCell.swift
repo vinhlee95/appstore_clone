@@ -7,14 +7,32 @@
 //
 
 import UIKit
+import SDWebImage
 
 class SearchResultCell: UICollectionViewCell {
     
-    let imageView: UIImageView = {
+    var appData: Result! {
+        didSet {
+            nameLabel.text = appData.trackName
+            categoryLabel.text = appData.primaryGenreName
+            ratingLabel.text = "\(appData.averageUserRating ?? 0)"
+            let logoImageUrl = URL(string: appData.artworkUrl100)
+            logoImageView.sd_setImage(with: logoImageUrl)
+            if appData.screenshotUrls.count > 1 {
+                screenshotImageView1.sd_setImage(with: URL(string: appData.screenshotUrls[0]))
+            }
+            if appData.screenshotUrls.count > 2 {
+                screenshotImageView2.sd_setImage(with: URL(string: appData.screenshotUrls[1]))
+            }
+        }
+    }
+    
+    let logoImageView: UIImageView = {
         let iv = UIImageView()
         iv.backgroundColor = .red
         iv.widthAnchor.constraint(equalToConstant: 64).isActive = true
         iv.heightAnchor.constraint(equalToConstant: 64).isActive = true
+        iv.clipsToBounds = true
         iv.layer.cornerRadius = 12
         return iv
     }()
@@ -55,6 +73,9 @@ class SearchResultCell: UICollectionViewCell {
     fileprivate func createScreenshotImageView() -> UIImageView {
         let iv = UIImageView()
         iv.backgroundColor = .blue
+        iv.layer.cornerRadius = 8
+        iv.clipsToBounds = true
+        iv.contentMode = .scaleAspectFill
         return iv
     }
     
@@ -66,7 +87,7 @@ class SearchResultCell: UICollectionViewCell {
     fileprivate func setupViews() {
         let labelStackView = setupLabelStackView()
         let infoStackView = UIStackView(arrangedSubviews: [
-            imageView,
+            logoImageView,
             labelStackView,
             getButton
         ])

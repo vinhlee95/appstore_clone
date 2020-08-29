@@ -34,10 +34,7 @@ class AppSearchController: UICollectionViewController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
-        let appData = appResults[indexPath.item]
-        cell.nameLabel.text = appData.trackName
-        cell.categoryLabel.text = appData.primaryGenreName
-        cell.ratingLabel.text = "\(appData.averageUserRating ?? 0)"
+        cell.appData = appResults[indexPath.item]
         return cell
     }
     
