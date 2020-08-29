@@ -11,6 +11,7 @@ import UIKit
 class AppSearchController: UICollectionViewController {
     private let cellId = "cellId"
     private let iTunesSearchUrl = "https://itunes.apple.com/search"
+    private var appResults = [Result]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,7 +32,10 @@ class AppSearchController: UICollectionViewController {
             guard let data = data else {return}
             do {
                 let searchResult = try JSONDecoder().decode(SearchResult.self, from: data)
-                searchResult.results.forEach({print($0.trackName, $0.primaryGenreName)})
+                self.appResults = searchResult.results
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
             } catch {
                 print("Error in decoding JSON search result", error)
             }
@@ -40,12 +44,16 @@ class AppSearchController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
+        let appData = appResults[indexPath.item]
+        cell.nameLabel.text = appData.trackName
+        cell.categoryLabel.text = appData.primaryGenreName
+        cell.ratingLabel.text = "\(appData.averageUserRating ?? 0)"
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return appResults.count
     }
     
     init() {
