@@ -12,7 +12,9 @@ class AppSearchController: UICollectionViewController {
     private let appResultCellId = "appResultCellId"
     private let discoverCellId = "discoverCellId"
     private let sectionHeaderId = "sectionHeaderId"
+    private let suggestedAppResultCellId = "suggestedAppResultCellId"
     private var appResults = [Result]()
+    private var suggestedAppResults = [Result]()
     private var timer: Timer?
     private let defaultSectionAmount = 2
     private let discoverTerms = ["instagram", "telegram", "cartoon yourself", "reverse video", "music games", "birthday countdown"]
@@ -20,14 +22,17 @@ class AppSearchController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
+        
         // Register cell ids
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: appResultCellId)
         collectionView.register(DiscoverCell.self, forCellWithReuseIdentifier: discoverCellId)
+        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: suggestedAppResultCellId)
+        
         // Register section headers
         collectionView.register(SearchSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId)
         
         setupSearchBar()
-        setupDiscoverSection()
+        fetchSuggestedApps()
     }
     
     fileprivate func debounceFetchApps(searchText: String) {
@@ -39,13 +44,25 @@ class AppSearchController: UICollectionViewController {
                     return
                 }
                 // Just display first 5 items
-                let renderedResults = Array(results[0...4])
-                self.appResults = renderedResults
+                self.appResults = Array(results[0...4])
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
             }
         })
+    }
+    
+    fileprivate func fetchSuggestedApps() {
+        NetworkService.shared.fetchApps(searchText: "LinkedIn") { (results, error) in
+            if error != nil {
+                return
+            }
+            // Just display first 5 items
+            self.suggestedAppResults = Array(results[0...4])
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     fileprivate func setupSearchBar() {
@@ -64,6 +81,12 @@ class AppSearchController: UICollectionViewController {
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath) as! DiscoverCell
             cell.discoverTerm = discoverTerms[indexPath.item]
             return cell
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: suggestedAppResultCellId, for: indexPath) as! SearchResultCell
+            var cellData = suggestedAppResults[indexPath.item]
+            cellData.screenshotUrls = []
+            cell.appData = cellData
+            return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath)
             cell.backgroundColor = .red
@@ -72,19 +95,32 @@ class AppSearchController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        if section == 0 {
+        switch section {
+        case 0:
             return appResults.count
+        case 1:
+            return discoverTerms.count
+        case 2:
+            return suggestedAppResults.count
+        default:
+            return 0
         }
-        return discoverTerms.count
     }
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        return 2
+        return 3
     }
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId, for: indexPath) as! SearchSectionHeader
-        sectionHeader.label.text = "Discover"
+        switch indexPath.section {
+        case 1:
+            sectionHeader.label.text = "Discover"
+        case 2:
+            sectionHeader.label.text = "Suggested"
+        default:
+            sectionHeader.label.text = ""
+        }
         return sectionHeader
     }
     
@@ -106,19 +142,30 @@ class AppSearchController: UICollectionViewController {
 
 extension AppSearchController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        if indexPath.section == 0 {
+        switch indexPath.section {
+        case 0:
             return .init(width: view.frame.width, height: 350)
+        case 1:
+            return .init(width: view.frame.width, height: 32)
+        case 2:
+            return .init(width: view.frame.width, height: 70)
+        default:
+            return .zero
         }
-        
-        return .init(width: view.frame.width, height: 32)
     }
     
+    // Spacing between Cells
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        if section == 0 {
+        switch section {
+        case 0:
             return 20
+        case 1:
+            return 8
+        case 2:
+            return 12
+        default:
+            return 0
         }
-        
-        return 8
     }
 }
 
@@ -130,11 +177,5 @@ extension AppSearchController: UISearchBarDelegate {
             return
         }
         self.debounceFetchApps(searchText: searchText)
-    }
-}
-
-extension AppSearchController {
-    fileprivate func setupDiscoverSection() {
-        
     }
 }

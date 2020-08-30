@@ -19,12 +19,8 @@ class SearchResultCell: UICollectionViewCell {
             
             logoImageView.sd_setImage(with: URL(string: appData.artworkUrl100))
             
-            screenshotImageView1.sd_setImage(with: URL(string: appData.screenshotUrls[0]))
-            if appData.screenshotUrls.count > 1 {
-                screenshotImageView2.sd_setImage(with: URL(string: appData.screenshotUrls[1]))
-            }
-            if appData.screenshotUrls.count > 2 {
-                screenshotImageView3.sd_setImage(with: URL(string: appData.screenshotUrls[2]))
+            if appData.screenshotUrls.count > 0 {
+                setupViews(screenshotUrls: appData.screenshotUrls)
             }
         }
     }
@@ -86,7 +82,7 @@ class SearchResultCell: UICollectionViewCell {
         setupViews()
     }
     
-    fileprivate func setupViews() {
+    fileprivate func setupViews(screenshotUrls: [String] = []) {
         let labelStackView = setupLabelStackView()
         let infoStackView = UIStackView(arrangedSubviews: [
             logoImageView,
@@ -96,14 +92,13 @@ class SearchResultCell: UICollectionViewCell {
         infoStackView.spacing = 12
         infoStackView.alignment = .top
         
-        let screenshotStackView = UIStackView(arrangedSubviews: [
-            screenshotImageView1,
-            screenshotImageView2,
-            screenshotImageView3
-        ])
-        screenshotStackView.spacing = 8
-        screenshotStackView.distribution = .fillEqually
+        if screenshotUrls.count == 0 {
+            addSubview(infoStackView)
+            infoStackView.fillSuperview(padding: .init(top: 0, left: 20, bottom: 0, right: 20))
+            return
+        }
         
+        let screenshotStackView = setupScreenshotStackView(screenshotUrls: screenshotUrls)
         let stackView = VerticalStackView(arrangedSubViews: [
             infoStackView,
             screenshotStackView
@@ -111,6 +106,25 @@ class SearchResultCell: UICollectionViewCell {
         
         addSubview(stackView)
         stackView.fillSuperview(padding: .init(top: 0, left: 20, bottom: 0, right: 20))
+    }
+    
+    fileprivate func setupScreenshotStackView(screenshotUrls: [String]) -> UIStackView {
+        screenshotImageView1.sd_setImage(with: URL(string: screenshotUrls[0]))
+        if screenshotUrls.count > 1 {
+            screenshotImageView2.sd_setImage(with: URL(string: screenshotUrls[1]))
+        }
+        if screenshotUrls.count > 2 {
+            screenshotImageView3.sd_setImage(with: URL(string: screenshotUrls[2]))
+        }
+        
+        let screenshotStackView = UIStackView(arrangedSubviews: [
+            screenshotImageView1,
+            screenshotImageView2,
+            screenshotImageView3
+        ])
+        screenshotStackView.spacing = 8
+        screenshotStackView.distribution = .fillEqually
+        return screenshotStackView
     }
     
     fileprivate func setupLabelStackView() -> UIStackView {
