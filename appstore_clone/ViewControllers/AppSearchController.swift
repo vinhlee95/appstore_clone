@@ -15,14 +15,14 @@ class AppSearchController: UICollectionViewController {
     private var appResults = [Result]()
     private var timer: Timer?
     private let defaultSectionAmount = 2
-    private let discoverTerms = ["cartoon yourself", "reverse video", "music games", "birthday countdown"]
+    private let discoverTerms = ["instagram", "telegram", "cartoon yourself", "reverse video", "music games", "birthday countdown"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         // Register cell ids
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: appResultCellId)
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: discoverCellId)
+        collectionView.register(DiscoverCell.self, forCellWithReuseIdentifier: discoverCellId)
         // Register section headers
         collectionView.register(SearchSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId)
         setupSearchBar()
@@ -60,8 +60,8 @@ class AppSearchController: UICollectionViewController {
             cell.appData = appResults[indexPath.item]
             return cell
         case 1:
-            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath)
-            cell.backgroundColor = .red
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath) as! DiscoverCell
+            cell.discoverTerm = discoverTerms[indexPath.item]
             return cell
         default:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath)
@@ -105,7 +105,11 @@ class AppSearchController: UICollectionViewController {
 
 extension AppSearchController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width, height: 350)
+        if indexPath.section == 0 {
+            return .init(width: view.frame.width, height: 350)
+        }
+        
+        return .init(width: view.frame.width, height: 20)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
