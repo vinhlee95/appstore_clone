@@ -9,15 +9,20 @@
 import UIKit
 
 class AppSearchController: UICollectionViewController {
-    private let cellId = "cellId"
+    private let appResultCellId = "appResultCellId"
+    private let discoverCellId = "discoverCellId"
     private var appResults = [Result]()
     private var timer: Timer?
+    private let defaultSectionAmount = 2
+    private let discoverTerms = ["cartoon yourself", "reverse video", "music games", "birthday countdown"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
-        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: appResultCellId)
+        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: discoverCellId)
         setupSearchBar()
+        setupDiscoverSection()
     }
     
     fileprivate func debounceFetchApps(searchText: String) {
@@ -28,7 +33,9 @@ class AppSearchController: UICollectionViewController {
                 if error != nil {
                     return
                 }
-                self.appResults = results
+                // Just display first 5 items
+                let renderedResults = Array(results[0...4])
+                self.appResults = renderedResults
                 DispatchQueue.main.async {
                     self.collectionView.reloadData()
                 }
@@ -43,13 +50,31 @@ class AppSearchController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! SearchResultCell
-        cell.appData = appResults[indexPath.item]
-        return cell
+        switch indexPath.section {
+        case 0:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: appResultCellId, for: indexPath) as! SearchResultCell
+            cell.appData = appResults[indexPath.item]
+            return cell
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath)
+            cell.backgroundColor = .red
+            return cell
+        default:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: discoverCellId, for: indexPath)
+            cell.backgroundColor = .red
+            return cell
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return appResults.count
+        if section == 0 {
+            return appResults.count
+        }
+        return discoverTerms.count
+    }
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
     
     init() {
@@ -79,5 +104,11 @@ extension AppSearchController: UISearchBarDelegate {
             return
         }
         self.debounceFetchApps(searchText: searchText)
+    }
+}
+
+extension AppSearchController {
+    fileprivate func setupDiscoverSection() {
+        
     }
 }
