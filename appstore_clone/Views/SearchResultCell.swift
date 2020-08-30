@@ -110,7 +110,7 @@ class SearchResultCell: UICollectionViewCell {
         ], spacing: 12)
         
         addSubview(stackView)
-        stackView.fillSuperview(padding: .init(top: 0, left: 12, bottom: 0, right: 12))
+        stackView.fillSuperview(padding: .init(top: 0, left: 20, bottom: 0, right: 20))
     }
     
     fileprivate func setupLabelStackView() -> UIStackView {

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -18,6 +18,7 @@
 		1B57D6BA24F7524300497C44 /* VerticalStackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6B924F7524300497C44 /* VerticalStackView.swift */; };
 		1B57D6BD24F75D0D00497C44 /* SearchResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D6BC24F75D0D00497C44 /* SearchResult.swift */; };
 		1B88804B24FACB1A009B6C0F /* NetworkService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B88804A24FACB1A009B6C0F /* NetworkService.swift */; };
+		1B88804D24FB7B4A009B6C0F /* SearchSectionHeader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B88804C24FB7B4A009B6C0F /* SearchSectionHeader.swift */; };
 		37220EB68DCC1B36D8679D8F /* Pods_appstore_clone.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D4ADFA78234479B5DF229EAA /* Pods_appstore_clone.framework */; };
 /* End PBXBuildFile section */
 
@@ -36,6 +37,7 @@
 		1B57D6B924F7524300497C44 /* VerticalStackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VerticalStackView.swift; sourceTree = "<group>"; };
 		1B57D6BC24F75D0D00497C44 /* SearchResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResult.swift; sourceTree = "<group>"; };
 		1B88804A24FACB1A009B6C0F /* NetworkService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkService.swift; sourceTree = "<group>"; };
+		1B88804C24FB7B4A009B6C0F /* SearchSectionHeader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchSectionHeader.swift; sourceTree = "<group>"; };
 		3AF3630E3CFDC01420EC986E /* Pods-appstore_clone.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appstore_clone.debug.xcconfig"; path = "Target Support Files/Pods-appstore_clone/Pods-appstore_clone.debug.xcconfig"; sourceTree = "<group>"; };
 		D4ADFA78234479B5DF229EAA /* Pods_appstore_clone.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_appstore_clone.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -100,6 +102,7 @@
 			isa = PBXGroup;
 			children = (
 				1B57D6B424F611E500497C44 /* SearchResultCell.swift */,
+				1B88804C24FB7B4A009B6C0F /* SearchSectionHeader.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -135,7 +138,6 @@
 				3AF3630E3CFDC01420EC986E /* Pods-appstore_clone.debug.xcconfig */,
 				0B03D8AC6C95C7FBCA912E78 /* Pods-appstore_clone.release.xcconfig */,
 			);
-			name = Pods;
 			path = Pods;
 			sourceTree = "<group>";
 		};
@@ -263,6 +265,7 @@
 				1B88804B24FACB1A009B6C0F /* NetworkService.swift in Sources */,
 				1B57D6B024F4AED000497C44 /* BaseTabBarController.swift in Sources */,
 				1B57D6BD24F75D0D00497C44 /* SearchResult.swift in Sources */,
+				1B88804D24FB7B4A009B6C0F /* SearchSectionHeader.swift in Sources */,
 				1B57D6B224F4C2CC00497C44 /* AppSearchController.swift in Sources */,
 				1B57D69F24F4AE0700497C44 /* ViewController.swift in Sources */,
 				1B57D69B24F4AE0700497C44 /* AppDelegate.swift in Sources */,

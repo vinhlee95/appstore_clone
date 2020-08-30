@@ -11,6 +11,7 @@ import UIKit
 class AppSearchController: UICollectionViewController {
     private let appResultCellId = "appResultCellId"
     private let discoverCellId = "discoverCellId"
+    private let sectionHeaderId = "sectionHeaderId"
     private var appResults = [Result]()
     private var timer: Timer?
     private let defaultSectionAmount = 2
@@ -19,8 +20,11 @@ class AppSearchController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
+        // Register cell ids
         collectionView.register(SearchResultCell.self, forCellWithReuseIdentifier: appResultCellId)
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: discoverCellId)
+        // Register section headers
+        collectionView.register(SearchSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId)
         setupSearchBar()
         setupDiscoverSection()
     }
@@ -75,6 +79,19 @@ class AppSearchController: UICollectionViewController {
     
     override func numberOfSections(in collectionView: UICollectionView) -> Int {
         return 2
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId, for: indexPath) as! SearchSectionHeader
+        sectionHeader.label.text = "Discover"
+        return sectionHeader
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        if section == 0 {
+            return .zero
+        }
+        return .init(width: collectionView.frame.width, height: 50)
     }
     
     init() {
