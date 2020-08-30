@@ -38,6 +38,7 @@ class AppSearchController: UICollectionViewController {
     
     fileprivate func setupSearchBar() {
         navigationItem.searchController = UISearchController(searchResultsController: nil)
+        navigationItem.searchController?.searchBar.placeholder = "Games, Apps, Stories, and More"
         navigationItem.searchController?.searchBar.delegate = self
     }
     
