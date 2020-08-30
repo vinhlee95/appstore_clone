@@ -14,12 +14,12 @@ class DiscoverCell: UICollectionViewCell {
             label.text = discoverTerm
         }
     }
-    
-    
+        
     private let label: UILabel = {
         let label = UILabel()
         label.font = UIFont.systemFont(ofSize: 20)
         label.textColor = #colorLiteral(red: 0.2941176471, green: 0.5607843137, blue: 0.968627451, alpha: 1)
+        label.layer.addBorder(edge: .bottom, color: .lightGray, thickness: 1)
         return label
     }()
     

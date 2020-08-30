@@ -25,6 +25,7 @@ class AppSearchController: UICollectionViewController {
         collectionView.register(DiscoverCell.self, forCellWithReuseIdentifier: discoverCellId)
         // Register section headers
         collectionView.register(SearchSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId)
+        
         setupSearchBar()
         setupDiscoverSection()
     }
@@ -109,11 +110,15 @@ extension AppSearchController: UICollectionViewDelegateFlowLayout {
             return .init(width: view.frame.width, height: 350)
         }
         
-        return .init(width: view.frame.width, height: 20)
+        return .init(width: view.frame.width, height: 32)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 20
+        if section == 0 {
+            return 20
+        }
+        
+        return 8
     }
 }
 
