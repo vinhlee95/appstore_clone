@@ -13,7 +13,12 @@ class NetworkService {
     static let shared = NetworkService() // Singleton
     
     func fetchApps(searchText: String = "", completion: @escaping ([Result], Error?) -> ()) {
-        let urlString = "\(iTunesSearchUrl)?term=\(searchText)&entity=software"
+        let searchArr = searchText.split(whereSeparator: {$0 == " "})
+        var searchTerm = searchText
+        if searchArr.count > 1 {
+            searchTerm = searchArr.joined(separator: "+")
+        }
+        let urlString = "\(iTunesSearchUrl)?term=\(searchTerm)&entity=software"
         guard let url = URL(string: urlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
@@ -21,7 +26,6 @@ class NetworkService {
                 completion([], error)
                 return
             }
-
             guard let data = data else {return}
             do {
                 let searchResult = try JSONDecoder().decode(SearchResult.self, from: data)

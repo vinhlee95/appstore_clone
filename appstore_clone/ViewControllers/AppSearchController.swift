@@ -39,20 +39,24 @@ class AppSearchController: UICollectionViewController {
         // Debounce making API request to fetch apps
         timer?.invalidate()
         timer = Timer.scheduledTimer(withTimeInterval: 0.5, repeats: false, block: { (_) in
-            NetworkService.shared.fetchApps(searchText: searchText) { (results, error) in
-                if error != nil {
-                    return
-                }
-                // Just display first 5 items
-                self.appResults = Array(results[0...4])
-                DispatchQueue.main.async {
-                    // Reset discover and suggested data
-                    self.discoverTerms = []
-                    self.suggestedAppResults = []
-                    self.collectionView.reloadData()
-                }
-            }
+            self.fetchApps(searchText: searchText)
         })
+    }
+    
+    fileprivate func fetchApps(searchText: String) {
+        NetworkService.shared.fetchApps(searchText: searchText) { (results, error) in
+            if error != nil {
+                return
+            }
+            // Just display first 5 items
+            self.appResults = Array(results[0...4])
+            DispatchQueue.main.async {
+                // Reset discover and suggested data
+                self.discoverTerms = []
+                self.suggestedAppResults = []
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     fileprivate func fetchSuggestedApps() {
@@ -72,6 +76,11 @@ class AppSearchController: UICollectionViewController {
         navigationItem.searchController = UISearchController(searchResultsController: nil)
         navigationItem.searchController?.searchBar.placeholder = "Games, Apps, Stories, and More"
         navigationItem.searchController?.searchBar.delegate = self
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        guard indexPath.section == 1 else {return}
+        fetchApps(searchText: discoverTerms[indexPath.item])
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
