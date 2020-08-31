@@ -17,7 +17,7 @@ class AppSearchController: UICollectionViewController {
     private var suggestedAppResults = [Result]()
     private var timer: Timer?
     private let defaultSectionAmount = 2
-    private let discoverTerms = ["instagram", "telegram", "cartoon yourself", "reverse video", "music games", "birthday countdown"]
+    private var discoverTerms = ["instagram", "telegram", "cartoon yourself", "reverse video", "music games", "birthday countdown"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -46,6 +46,9 @@ class AppSearchController: UICollectionViewController {
                 // Just display first 5 items
                 self.appResults = Array(results[0...4])
                 DispatchQueue.main.async {
+                    // Reset discover and suggested data
+                    self.discoverTerms = []
+                    self.suggestedAppResults = []
                     self.collectionView.reloadData()
                 }
             }
@@ -115,9 +118,9 @@ class AppSearchController: UICollectionViewController {
         let sectionHeader = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: sectionHeaderId, for: indexPath) as! SearchSectionHeader
         switch indexPath.section {
         case 1:
-            sectionHeader.label.text = "Discover"
+            sectionHeader.label.text = discoverTerms.count > 0 ? "Discover" : ""
         case 2:
-            sectionHeader.label.text = "Suggested"
+            sectionHeader.label.text = suggestedAppResults.count > 0 ? "Suggested" : ""
         default:
             sectionHeader.label.text = ""
         }
@@ -128,6 +131,15 @@ class AppSearchController: UICollectionViewController {
         if section == 0 {
             return .zero
         }
+        
+        if section == 1 && discoverTerms.count == 0 {
+            return .zero
+        }
+        
+        if section == 2 && suggestedAppResults.count == 0 {
+            return .zero
+        }
+        
         return .init(width: collectionView.frame.width, height: 50)
     }
     
@@ -146,9 +158,9 @@ extension AppSearchController: UICollectionViewDelegateFlowLayout {
         case 0:
             return .init(width: view.frame.width, height: 350)
         case 1:
-            return .init(width: view.frame.width, height: 32)
+            return discoverTerms.count > 0 ? .init(width: view.frame.width, height: 32) : .zero
         case 2:
-            return .init(width: view.frame.width, height: 70)
+            return suggestedAppResults.count > 0 ? .init(width: view.frame.width, height: 70) : .zero
         default:
             return .zero
         }
