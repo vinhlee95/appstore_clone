@@ -53,6 +53,16 @@ extension UIView {
             trailingAnchor.constraint(equalTo: superviewTrailingAnchor, constant: -padding.right).isActive = true
         }
     }
+    
+    func constrainSize(width: CGFloat, height: CGFloat = 0) {
+        if width != 0 {
+            self.widthAnchor.constraint(equalToConstant: width).isActive = true
+        }
+        
+        if height != 0 {
+            self.heightAnchor.constraint(equalToConstant: height).isActive = true
+        }
+    }
 }
 
 class AttributedText {
@@ -133,4 +143,20 @@ extension CALayer {
         self.addSublayer(border)
     }
 
+}
+
+extension UIImageView {
+    convenience init(cornerRadius: CGFloat) {
+        self.init()
+        self.layer.cornerRadius = cornerRadius
+        self.clipsToBounds = true
+    }
+}
+
+extension UIButton {
+    convenience init(title: String) {
+        self.init()
+        self.setTitle(title, for: .normal)
+        self.setTitleColor(.blue, for: .normal)
+    }
 }
