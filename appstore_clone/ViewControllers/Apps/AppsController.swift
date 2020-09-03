@@ -8,10 +8,21 @@
 
 import UIKit
 
+struct AppCategory {
+    let name: String
+    let rssUrl: String
+}
+
 class AppsController: BaseListController {
     private let cellId = "cellId"
     private let headerId = "headerId"
-    private var gameFeed: GameFeed?
+    private var gameFeed: AppFeed?
+    private var appCategories: [AppCategory] = [
+        AppCategory(name: "topGames", rssUrl: "https://rss.itunes.apple.com/api/v1/us/ios-apps/new-games-we-love/all/10/explicit.json"),
+        AppCategory(name: "topFree", rssUrl: "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/10/explicit.json"),
+        AppCategory(name: "topGrossing", rssUrl: "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-grossing/all/10/explicit.json"),
+    ]
+    private var appGroups = [AppFeed]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -22,26 +33,29 @@ class AppsController: BaseListController {
     }
     
     fileprivate func fetchApps() {
-        NetworkService.shared.fetchGames { (gameFeed, error) in
-            if error != nil {
-                return
+        let dispatchGroup = DispatchGroup()
+        
+        appCategories.forEach { (category) in
+            dispatchGroup.enter()
+            NetworkService.shared.fetchAppsByUrl(urlString: category.rssUrl) { (appFeed, error) in
+                dispatchGroup.leave()
+                guard let appFeed = appFeed else {return}
+                self.appGroups.append(appFeed)
             }
-            
-            guard let gameFeed = gameFeed else {return}
-            self.gameFeed = gameFeed
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.collectionView.reloadData()
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return appGroups.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppGroupCell
-        guard let sectionData = gameFeed else {return cell}
+        let sectionData = appGroups[indexPath.item]
         cell.label.text = sectionData.title
         cell.horizontalController.appResults = sectionData.results
         cell.horizontalController.collectionView.reloadData()

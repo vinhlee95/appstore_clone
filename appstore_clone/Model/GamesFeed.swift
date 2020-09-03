@@ -8,16 +8,16 @@
 
 import Foundation
 
-struct GameFeedData: Decodable {
-    let feed: GameFeed
+struct AppFeedData: Decodable {
+    let feed: AppFeed
 }
 
-struct GameFeed: Decodable {
+struct AppFeed: Decodable {
     let title: String
-    let results: [GameFeedResult]
+    let results: [AppFeedResult]
 }
 
-struct GameFeedResult: Decodable {
+struct AppFeedResult: Decodable {
     let name: String
     let artistName: String
     let artworkUrl100: String

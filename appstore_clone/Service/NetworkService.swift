@@ -38,8 +38,8 @@ class NetworkService {
         }.resume()
     }
     
-    func fetchGames(completion: @escaping (GameFeed?, Error?) -> ()) {
-        guard let url = URL(string: gameFeedUrl) else {return}
+    func fetchAppsByUrl(urlString: String, completion: @escaping (AppFeed?, Error?) -> ()) {
+        guard let url = URL(string: urlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
                 print("Error in fetching games feed", error)
@@ -48,7 +48,7 @@ class NetworkService {
             }
             guard let data = data else {return}
             do {
-                let gameFeedData = try JSONDecoder().decode(GameFeedData.self, from: data)
+                let gameFeedData = try JSONDecoder().decode(AppFeedData.self, from: data)
                 completion(gameFeedData.feed, nil)
             } catch {
                 print("Error in decoding JSON search result", error)

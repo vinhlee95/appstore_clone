@@ -13,7 +13,7 @@ class AppHorizontalController: BaseListController {
     private let lineSpacing: CGFloat = 10
     private let topBottomPadding: CGFloat = 12
     private let leftRightPadding: CGFloat = 16
-    var appResults = [GameFeedResult]()
+    var appResults = [AppFeedResult]()
     
     override func viewDidLoad() {
         super.viewDidLoad()

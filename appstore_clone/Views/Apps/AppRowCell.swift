@@ -10,7 +10,7 @@ import UIKit
 import SDWebImage
 
 class AppRowCell: UICollectionViewCell {
-    var appData: GameFeedResult! {
+    var appData: AppFeedResult! {
         didSet {
             appNameLabel.text = appData.name
             appDeveloperLabel.text = appData.artistName
