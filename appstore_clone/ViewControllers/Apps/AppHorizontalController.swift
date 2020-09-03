@@ -13,6 +13,7 @@ class AppHorizontalController: BaseListController {
     private let lineSpacing: CGFloat = 10
     private let topBottomPadding: CGFloat = 12
     private let leftRightPadding: CGFloat = 16
+    var appResults = [GameFeedResult]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,11 +26,12 @@ class AppHorizontalController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 5
+        return appResults.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppRowCell
+        cell.appData = appResults[indexPath.item]
         return cell
     }
 }

@@ -7,8 +7,17 @@
 //
 
 import UIKit
+import SDWebImage
 
 class AppRowCell: UICollectionViewCell {
+    var appData: GameFeedResult! {
+        didSet {
+            appNameLabel.text = appData.name
+            appDeveloperLabel.text = appData.artistName
+            appLogo.sd_setImage(with: URL(string: appData.artworkUrl100))
+        }
+    }
+    
     private let appLogo = UIImageView(cornerRadius: 8)
     private let appNameLabel = UILabel(text: "App name", font: .boldSystemFont(ofSize: 18))
     private let appDeveloperLabel = UILabel(text: "Developer", font: .systemFont(ofSize: 14))
@@ -23,7 +32,6 @@ class AppRowCell: UICollectionViewCell {
     private func setupViews() {
         let labelStackView = VerticalStackView(arrangedSubViews: [appNameLabel, appDeveloperLabel], spacing: 8)
         appLogo.constrainSize(width: 64, height: 64)
-        appLogo.backgroundColor = .green
         getButton.constrainSize(width: 64, height: 32)
         getButton.layer.cornerRadius = 32/2
         getButton.titleLabel?.font = UIFont.systemFont(ofSize: 14)

@@ -11,20 +11,40 @@ import UIKit
 class AppsController: BaseListController {
     private let cellId = "cellId"
     private let headerId = "headerId"
+    private var gameFeed: GameFeed?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(AppGroupCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+        fetchApps()
+    }
+    
+    fileprivate func fetchApps() {
+        NetworkService.shared.fetchGames { (gameFeed, error) in
+            if error != nil {
+                return
+            }
+            
+            guard let gameFeed = gameFeed else {return}
+            self.gameFeed = gameFeed
+            DispatchQueue.main.async {
+                self.collectionView.reloadData()
+            }
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return 1
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppGroupCell
+        guard let sectionData = gameFeed else {return cell}
+        cell.label.text = sectionData.title
+        cell.horizontalController.appResults = sectionData.results
+        cell.horizontalController.collectionView.reloadData()
         return cell
     }
     
