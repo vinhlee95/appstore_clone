@@ -23,17 +23,39 @@ class AppsController: BaseListController {
         AppCategory(name: "topGrossing", rssUrl: "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-grossing/all/10/explicit.json"),
     ]
     private var appGroups = [AppFeed]()
+    private var socialApps = [SocialApp]()
+    
+    private let spinnerView: UIActivityIndicatorView = {
+        let sv = UIActivityIndicatorView(style: .large)
+        sv.color = .gray
+        sv.startAnimating()
+        sv.hidesWhenStopped = true
+        return sv
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(AppGroupCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
+        setupLoadingIndicator()
         fetchApps()
+    }
+    
+    fileprivate func setupLoadingIndicator() {
+        collectionView.addSubview(spinnerView)
+        spinnerView.centerXY()
+        spinnerView.fillSuperview()
     }
     
     fileprivate func fetchApps() {
         let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchSocialApps { (socialApps, error) in
+            dispatchGroup.leave()
+            self.socialApps = socialApps
+        }
         
         appCategories.forEach { (category) in
             dispatchGroup.enter()
@@ -45,6 +67,7 @@ class AppsController: BaseListController {
         }
         
         dispatchGroup.notify(queue: .main) {
+            self.spinnerView.stopAnimating()
             self.collectionView.reloadData()
         }
     }
@@ -64,6 +87,8 @@ class AppsController: BaseListController {
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         let header = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId, for: indexPath) as! AppSectionHeader
+        header.horizontalController.apps = socialApps
+        header.horizontalController.collectionView.reloadData()
         return header
     }
 }

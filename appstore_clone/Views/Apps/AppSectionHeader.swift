@@ -9,7 +9,7 @@
 import UIKit
 
 class AppSectionHeader: UICollectionReusableView {
-    private let horizontalController = HeaderHorizontalController()
+    let horizontalController = HeaderHorizontalController()
 
     override init(frame: CGRect) {
         super.init(frame: frame)

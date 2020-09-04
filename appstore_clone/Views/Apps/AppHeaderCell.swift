@@ -7,8 +7,18 @@
 //
 
 import UIKit
+import SDWebImage
 
 class AppHeaderCell: UICollectionViewCell {
+    var appData: SocialApp! {
+        didSet {
+            appName.text = appData.name
+            appExcerpt.text = appData.tagline
+            appImage.sd_setImage(with: URL(string: appData.imageUrl))
+        }
+    }
+    
+    
     private let appName = UILabel(text: "Facebook", font: .boldSystemFont(ofSize: 16))
     private let appExcerpt = UILabel(text: "Keeping up with friends is faster than ever", font: .systemFont(ofSize: 20))
     private let appImage = UIImageView(cornerRadius: 8)
@@ -21,7 +31,6 @@ class AppHeaderCell: UICollectionViewCell {
     private func setupViews() {
         appName.textColor = .blue
         appExcerpt.numberOfLines = 2
-        appImage.backgroundColor = .purple
         
         let stackView = VerticalStackView(arrangedSubViews: [
             appName,
