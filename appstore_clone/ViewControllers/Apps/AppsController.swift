@@ -54,6 +54,7 @@ class AppsController: BaseListController {
         dispatchGroup.enter()
         NetworkService.shared.fetchSocialApps { (socialApps, error) in
             dispatchGroup.leave()
+            guard let socialApps = socialApps else {return}
             self.socialApps = socialApps
         }
         
@@ -61,7 +62,9 @@ class AppsController: BaseListController {
             dispatchGroup.enter()
             NetworkService.shared.fetchAppsByUrl(urlString: category.rssUrl) { (appFeed, error) in
                 dispatchGroup.leave()
-                guard let appFeed = appFeed else {return}
+                if error != nil {
+                    return
+                }
                 self.appGroups.append(appFeed)
             }
         }

@@ -22,59 +22,41 @@ class NetworkService {
             searchTerm = searchArr.joined(separator: "+")
         }
         let urlString = "\(iTunesSearchUrl)?term=\(searchTerm)&entity=software"
+        
+        fetchGenericJSONData(urlString: urlString) { (searchResult: SearchResult?, error: Error?) in
+            guard let searchResult = searchResult else {return}
+            completion(searchResult.results, error)
+        }
+    }
+        
+    func fetchAppsByUrl(urlString: String, completion: @escaping (AppFeed, Error?) -> ()) {
+        fetchGenericJSONData(urlString: urlString) { (appFeedData: AppFeedData?, error: Error?) in
+            guard let appFeedData = appFeedData else {return}
+            completion(appFeedData.feed, error)
+        }
+    }
+    
+    func fetchSocialApps(completion: @escaping ([SocialApp]?, Error?) -> ()) {
+        fetchGenericJSONData(urlString: socialAppApi, completion: completion)
+    }
+    
+    // Generic method for fetching JSON data
+    func fetchGenericJSONData<T: Decodable>(urlString: String, completion: @escaping (T?, Error?) -> ()) {
         guard let url = URL(string: urlString) else {return}
         URLSession.shared.dataTask(with: url) { (data, response, error) in
             if let error = error {
-                print("Error in fetching iTunes apps", error)
-                completion([], error)
-                return
-            }
-            guard let data = data else {return}
-            do {
-                let searchResult = try JSONDecoder().decode(SearchResult.self, from: data)
-                completion(searchResult.results, nil)
-            } catch {
-                print("Error in decoding JSON search result", error)
-                completion([], error)
-            }
-        }.resume()
-    }
-    
-    func fetchAppsByUrl(urlString: String, completion: @escaping (AppFeed?, Error?) -> ()) {
-        guard let url = URL(string: urlString) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error in fetching games feed", error)
+                print("Error in fetching apps", error)
                 completion(nil, error)
-                return
-            }
-            guard let data = data else {return}
-            do {
-                let gameFeedData = try JSONDecoder().decode(AppFeedData.self, from: data)
-                completion(gameFeedData.feed, nil)
-            } catch {
-                print("Error in decoding JSON search result", error)
-                completion(nil, error)
-            }
-        }.resume()
-    }
-    
-    func fetchSocialApps(completion: @escaping ([SocialApp], Error?) -> ()) {
-        guard let url = URL(string: socialAppApi) else {return}
-        URLSession.shared.dataTask(with: url) { (data, response, error) in
-            if let error = error {
-                print("Error in fetching social apps", error)
-                completion([], error)
                 return
             }
             
             guard let data = data else {return}
             do {
-                let socialAppData = try JSONDecoder().decode([SocialApp].self, from: data)
-                completion(socialAppData, nil)
+                let data = try JSONDecoder().decode(T.self, from: data)
+                completion(data, nil)
             } catch {
                 print("Error in decoding JSON search result", error)
-                completion([], error)
+                completion(nil, error)
             }
         }.resume()
     }
