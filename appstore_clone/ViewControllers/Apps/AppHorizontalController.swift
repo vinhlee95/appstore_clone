@@ -15,6 +15,8 @@ class AppHorizontalController: HorizontalSnapController {
     private let leftRightPadding: CGFloat = 16
     var appResults = [AppFeedResult]()
     
+    var didSelectApp: ((AppFeedResult) -> ())?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
@@ -34,6 +36,11 @@ class AppHorizontalController: HorizontalSnapController {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppRowCell
         cell.appData = appResults[indexPath.item]
         return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedApp = appResults[indexPath.item]
+        didSelectApp?(selectedApp)
     }
 }
 

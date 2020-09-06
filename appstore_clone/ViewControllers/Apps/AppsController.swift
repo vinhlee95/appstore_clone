@@ -85,6 +85,14 @@ class AppsController: BaseListController {
         cell.label.text = sectionData.title
         cell.horizontalController.appResults = sectionData.results
         cell.horizontalController.collectionView.reloadData()
+        
+        cell.horizontalController.didSelectApp = { appFeedResult in
+            print(appFeedResult)
+            let redController = UIViewController()
+            redController.view.backgroundColor = .white
+            redController.navigationItem.title = appFeedResult.name
+            self.navigationController?.pushViewController(redController, animated: true)
+        }
         return cell
     }
     
