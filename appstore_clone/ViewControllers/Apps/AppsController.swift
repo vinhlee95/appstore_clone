@@ -35,7 +35,6 @@ class AppsController: BaseListController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .white
         collectionView.register(AppGroupCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         setupLoadingIndicator()
@@ -88,10 +87,9 @@ class AppsController: BaseListController {
         
         cell.horizontalController.didSelectApp = { appFeedResult in
             print(appFeedResult)
-            let redController = UIViewController()
-            redController.view.backgroundColor = .white
-            redController.navigationItem.title = appFeedResult.name
-            self.navigationController?.pushViewController(redController, animated: true)
+            let appDetailController = AppDetailController()
+            appDetailController.navigationItem.title = appFeedResult.name
+            self.navigationController?.pushViewController(appDetailController, animated: true)
         }
         return cell
     }
