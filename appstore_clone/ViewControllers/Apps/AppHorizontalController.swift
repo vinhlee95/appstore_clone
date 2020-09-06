@@ -8,7 +8,7 @@
 
 import UIKit
 
-class AppHorizontalController: BaseListController {
+class AppHorizontalController: HorizontalSnapController {
     private let cellId = "cellId"
     private let lineSpacing: CGFloat = 10
     private let topBottomPadding: CGFloat = 12
@@ -23,6 +23,7 @@ class AppHorizontalController: BaseListController {
         if let layout = collectionViewLayout as? UICollectionViewFlowLayout {
             layout.scrollDirection = .horizontal
         }
+        collectionView.contentInset = .init(top: topBottomPadding, left: leftRightPadding, bottom: topBottomPadding, right: leftRightPadding)
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -44,9 +45,5 @@ extension AppHorizontalController: UICollectionViewDelegateFlowLayout {
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         return lineSpacing
-    }
-
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .init(top: topBottomPadding, left: leftRightPadding, bottom: topBottomPadding, right: leftRightPadding)
     }
 }

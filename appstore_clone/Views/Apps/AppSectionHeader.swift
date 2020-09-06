@@ -13,7 +13,6 @@ class AppSectionHeader: UICollectionReusableView {
 
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
         addSubview(horizontalController.view)
         horizontalController.view.fillSuperview()
     }

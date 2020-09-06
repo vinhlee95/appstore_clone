@@ -38,7 +38,7 @@ class AppHeaderCell: UICollectionViewCell {
             appImage
         ])
         addSubview(stackView)
-        stackView.fillSuperview(padding: .init(top: 0, left: 16, bottom: 0, right: 0))
+        stackView.fillSuperview()
     }
     
     required init?(coder: NSCoder) {
