@@ -86,9 +86,9 @@ class AppsController: BaseListController {
         cell.horizontalController.collectionView.reloadData()
         
         cell.horizontalController.didSelectApp = { appFeedResult in
-            print(appFeedResult)
             let appDetailController = AppDetailController()
-            appDetailController.navigationItem.title = appFeedResult.name
+            appDetailController.appData = appFeedResult
+            self.navigationController?.navigationBar.prefersLargeTitles = false
             self.navigationController?.pushViewController(appDetailController, animated: true)
         }
         return cell
