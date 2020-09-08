@@ -12,6 +12,7 @@ import SDWebImage
 class AppDetailController: BaseListController {
     private let itunesLookupApi = "https://itunes.apple.com/lookup"
     private let cellId = "cellId"
+    private let previewCellId = "previewCellId"
     private var app: Result?
     
     var appId: String! {
@@ -31,30 +32,45 @@ class AppDetailController: BaseListController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.backgroundColor = .gray
+        collectionView.backgroundColor = .white
         collectionView.register(AppDetailCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(AppPreviewCell.self, forCellWithReuseIdentifier: previewCellId)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppDetailCell
-        cell.app = app
-        return cell
+        switch indexPath.item {
+        case 0:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppDetailCell
+            cell.app = app
+            return cell
+        case 1:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: previewCellId, for: indexPath) as! AppPreviewCell
+//            cell.app = app
+            return cell
+        default:
+            return UICollectionViewCell()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
 }
 
 extension AppDetailController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        // Calculate height for the cell
-        let dummyCell = AppDetailCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 1000))
-        dummyCell.app = self.app
-        dummyCell.layoutIfNeeded()
-        
-        let estimatedSize = dummyCell.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
-        
-        return .init(width: view.frame.width, height: estimatedSize.height)
+        switch indexPath.item {
+        case 0:
+            // Calculate height for the cell
+            let dummyCell = AppDetailCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 1000))
+            dummyCell.app = self.app
+            dummyCell.layoutIfNeeded()
+            
+            let estimatedSize = dummyCell.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
+            
+            return .init(width: view.frame.width, height: estimatedSize.height)
+        default:
+            return .init(width: view.frame.width, height: 300)
+        }
     }
 }
