@@ -14,6 +14,7 @@ class HorizontalSnapController: UICollectionViewController {
         layout.scrollDirection = .horizontal
         super.init(collectionViewLayout: layout)
         collectionView.decelerationRate = .fast
+        collectionView.backgroundColor = .white
     }
     
     required init?(coder: NSCoder) {

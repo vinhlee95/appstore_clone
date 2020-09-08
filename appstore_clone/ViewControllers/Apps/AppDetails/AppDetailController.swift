@@ -70,7 +70,7 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
             
             return .init(width: view.frame.width, height: estimatedSize.height)
         default:
-            return .init(width: view.frame.width, height: 300)
+            return .init(width: view.frame.width, height: 350)
         }
     }
 }

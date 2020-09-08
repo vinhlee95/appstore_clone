@@ -9,38 +9,20 @@
 import UIKit
 
 class AppPreviewCell: UICollectionViewCell {
-    private let previewLabel = UILabel(text: "Preview", font: .boldSystemFont(ofSize: 20))
-    private let previewImage1 = UIImageView(cornerRadius: 8)
-    private let previewImage2 = UIImageView(cornerRadius: 8)
-    private let previewImage3 = UIImageView(cornerRadius: 8)
-
+    private let label = UILabel(text: "Preview", font: .boldSystemFont(ofSize: 20))
+    let appPreviewHorizontalController = AppPreviewHorizontalController()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        backgroundColor = .white
         setupViews()
-        backgroundColor = .yellow
     }
     
     private func setupViews() {
-        let stackView = VerticalStackView(arrangedSubViews: [
-            previewLabel,
-            setupPreviewStackView()
-        ], spacing: 8)
-        addSubview(stackView)
-        stackView.fillSuperview(padding: .init(top: 0, left: 16, bottom: 0, right: 16))
-    }
-    
-    private func setupPreviewStackView() -> UIStackView {
-        previewImage1.backgroundColor = .green
-        previewImage2.backgroundColor = .green
-        previewImage3.backgroundColor = .green
-
-        let stackView = UIStackView(arrangedSubviews: [
-            previewImage1,
-            previewImage2,
-            previewImage3
-        ])
-        return stackView
+        addSubview(label)
+        label.anchor(top: topAnchor, leading: leadingAnchor, bottom: nil, trailing: trailingAnchor, paddingLeft: 16)
+        addSubview(appPreviewHorizontalController.view)
+        appPreviewHorizontalController.view.anchor(top: label.bottomAnchor, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor)
     }
     
     required init?(coder: NSCoder) {
