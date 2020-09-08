@@ -7,9 +7,16 @@
 //
 
 import UIKit
+import SDWebImage
 
 class AppPreviewHorizontalController: HorizontalSnapController {
     private let cellId = "cellId"
+    
+    var app: Result! {
+        didSet {
+            
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,16 +26,18 @@ class AppPreviewHorizontalController: HorizontalSnapController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PreviewImageCell
+        guard let screenshotUrlString = app?.screenshotUrls[indexPath.item] else {return cell}
+        cell.screenshot.sd_setImage(with: URL(string: screenshotUrlString))
         return cell
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return app?.screenshotUrls.count ?? 0
     }
 }
 
 extension AppPreviewHorizontalController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width * 0.6, height: 300)
+        return .init(width: view.frame.width * 0.6, height: view.frame.height)
     }
 }

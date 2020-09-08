@@ -7,11 +7,16 @@
 //
 
 import UIKit
+import SDWebImage
 
 class PreviewImageCell: UICollectionViewCell {
+    let screenshot = UIImageView(cornerRadius: 8)
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
+        backgroundColor = .white
+        addSubview(screenshot)
+        screenshot.fillSuperview()
     }
     
     required init?(coder: NSCoder) {

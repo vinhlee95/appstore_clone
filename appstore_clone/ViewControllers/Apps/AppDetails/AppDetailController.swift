@@ -45,7 +45,8 @@ class AppDetailController: BaseListController {
             return cell
         case 1:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: previewCellId, for: indexPath) as! AppPreviewCell
-//            cell.app = app
+            cell.appPreviewHorizontalController.app = app
+            cell.appPreviewHorizontalController.collectionView.reloadData()
             return cell
         default:
             return UICollectionViewCell()
@@ -70,7 +71,7 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
             
             return .init(width: view.frame.width, height: estimatedSize.height)
         default:
-            return .init(width: view.frame.width, height: 350)
+            return .init(width: view.frame.width, height: 440)
         }
     }
 }
