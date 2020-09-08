@@ -11,81 +11,50 @@ import SDWebImage
 
 class AppDetailController: BaseListController {
     private let itunesLookupApi = "https://itunes.apple.com/lookup"
+    private let cellId = "cellId"
+    private var app: Result?
     
-    var appData: AppFeedResult! {
+    var appId: String! {
         didSet {
-            NetworkService.shared.fetchGenericJSONData(urlString: "\(itunesLookupApi)?id=\(appData.id)") { (response: SearchResult?, error) in
+            NetworkService.shared.fetchGenericJSONData(urlString: "\(itunesLookupApi)?id=\(appId ?? "")") { (response: SearchResult?, error) in
                 if error != nil {return}
-                print(response?.results.first?.trackName)
+                guard let appData = response?.results.first else {return}
+                self.app = appData
+                
+                DispatchQueue.main.async {
+                    self.collectionView.reloadData()
+                }
             }
             
-            appName.text = appData.name
-            appIconImage.sd_setImage(with: URL(string: appData.artworkUrl100))
         }
     }
     
-    //
-    // App description
-    //
-    let appIconImage: UIImageView = {
-        let iv = UIImageView(cornerRadius: 8)
-        iv.backgroundColor = .red
-        iv.constrainSize(width: 120, height: 120)
-        return iv
-    }()
-    let appName = UILabel(text: "App name", font: .boldSystemFont(ofSize: 24))
-    let appDescription = UILabel(text: "App description", font: UIFont.systemFont(ofSize: 14, weight: .ultraLight))
-    let downloadButton: UIButton = {
-        let button = UIButton(title: "Free", cornerRadius: 16)
-        button.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        button.constrainSize(width: 64, height: 32)
-        return button
-    }()
-    
-    //
-    // Release notes
-    //
-    let whatsNewLabel = UILabel(text: "What's new", font: .boldSystemFont(ofSize: 20))
-    let appVersion = UILabel(text: "1.0.0", font: UIFont.systemFont(ofSize: 14, weight: .ultraLight))
-    let releaseNotes = UILabel(text: "Release notes", font: .systemFont(ofSize: 16))
-    
     override func viewDidLoad() {
         super.viewDidLoad()
-        collectionView.contentInset = .init(top: 16, left: 16, bottom: 0, right: 16)
-        setupViews()
+        collectionView.backgroundColor = .gray
+        collectionView.register(AppDetailCell.self, forCellWithReuseIdentifier: cellId)
     }
     
-    private func setupViews() {
-        let stackView = VerticalStackView(arrangedSubViews: [
-            setupAppHeaderStackVIew(),
-            whatsNewLabel,
-            appVersion,
-            releaseNotes
-        ], spacing: 12)
+    override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! AppDetailCell
+        cell.app = app
+        return cell
+    }
+    
+    override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 1
+    }
+}
+
+extension AppDetailController: UICollectionViewDelegateFlowLayout {
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        // Calculate height for the cell
+        let dummyCell = AppDetailCell(frame: .init(x: 0, y: 0, width: view.frame.width, height: 1000))
+        dummyCell.app = self.app
+        dummyCell.layoutIfNeeded()
         
-        collectionView.addSubview(stackView)
-        stackView.fillSuperview()
-    }
-    
-    private func setupAppHeaderStackVIew() -> UIStackView {
-        let stackView = UIStackView(arrangedSubviews: [
-            appIconImage,
-            setupDescriptionStackView()
-        ])
-        stackView.spacing = 12
-        return stackView
-    }
-    
-    private func setupDescriptionStackView() -> UIStackView {
-        let stackView = VerticalStackView(arrangedSubViews: [
-            appName,
-            appDescription,
-            UIStackView(arrangedSubviews: [
-                downloadButton,
-                UIView()
-            ])
-        ], spacing: 8)
-        stackView.distribution = .fill
-        return stackView
+        let estimatedSize = dummyCell.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
+        
+        return .init(width: view.frame.width, height: estimatedSize.height)
     }
 }

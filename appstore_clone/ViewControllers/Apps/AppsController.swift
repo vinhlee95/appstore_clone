@@ -87,7 +87,7 @@ class AppsController: BaseListController {
         
         cell.horizontalController.didSelectApp = { appFeedResult in
             let appDetailController = AppDetailController()
-            appDetailController.appData = appFeedResult
+            appDetailController.appId = appFeedResult.id
             self.navigationController?.navigationBar.prefersLargeTitles = false
             self.navigationController?.pushViewController(appDetailController, animated: true)
         }
