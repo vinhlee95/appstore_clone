@@ -13,6 +13,7 @@ class AppDetailController: BaseListController {
     private let itunesLookupApi = "https://itunes.apple.com/lookup"
     private let cellId = "cellId"
     private let previewCellId = "previewCellId"
+    private let reviewCellId = "reviewCellId"
     private var app: Result?
     
     var appId: String! {
@@ -35,6 +36,7 @@ class AppDetailController: BaseListController {
         collectionView.backgroundColor = .white
         collectionView.register(AppDetailCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppPreviewCell.self, forCellWithReuseIdentifier: previewCellId)
+        collectionView.register(AppReviewRowCell.self, forCellWithReuseIdentifier: reviewCellId)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -48,13 +50,16 @@ class AppDetailController: BaseListController {
             cell.appPreviewHorizontalController.app = app
             cell.appPreviewHorizontalController.collectionView.reloadData()
             return cell
+        case 2:
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reviewCellId, for: indexPath) as! AppReviewRowCell
+            return cell
         default:
             return UICollectionViewCell()
         }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 2
+        return 3
     }
 }
 
@@ -70,8 +75,12 @@ extension AppDetailController: UICollectionViewDelegateFlowLayout {
             let estimatedSize = dummyCell.systemLayoutSizeFitting(.init(width: view.frame.width, height: 1000))
             
             return .init(width: view.frame.width, height: estimatedSize.height)
-        default:
+        case 1:
             return .init(width: view.frame.width, height: 440)
+        case 2:
+            return .init(width: view.frame.width, height: 250)
+        default:
+            return .init(width: view.frame.width, height: 200)
         }
     }
 }
