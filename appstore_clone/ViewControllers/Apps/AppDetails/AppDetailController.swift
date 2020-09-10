@@ -11,23 +11,40 @@ import SDWebImage
 
 class AppDetailController: BaseListController {
     private let itunesLookupApi = "https://itunes.apple.com/lookup"
+    private let itunesReviewRssApi = "https://itunes.apple.com/us/rss/customerreviews"
+    private let itunesReviewJsonSort = "sortby=mostrecent/json"
     private let cellId = "cellId"
     private let previewCellId = "previewCellId"
     private let reviewCellId = "reviewCellId"
     private var app: Result?
+    private var responseEntries: [ReviewEntry]?
     
     var appId: String! {
         didSet {
-            NetworkService.shared.fetchGenericJSONData(urlString: "\(itunesLookupApi)?id=\(appId ?? "")") { (response: SearchResult?, error) in
-                if error != nil {return}
-                guard let appData = response?.results.first else {return}
-                self.app = appData
-                
-                DispatchQueue.main.async {
-                    self.collectionView.reloadData()
-                }
-            }
-            
+            fetchAppData(appId: appId)
+        }
+    }
+    
+    private func fetchAppData(appId: String) {
+        let dispatchGroup = DispatchGroup()
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchGenericJSONData(urlString: "\(itunesLookupApi)?id=\(appId)") { (response: SearchResult?, error) in
+            dispatchGroup.leave()
+            if error != nil {return}
+            self.app = response?.results.first
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchGenericJSONData(urlString: "\(itunesReviewRssApi)/id=\(appId)/\(itunesReviewJsonSort)") { (response: ReviewResponse?, error) in
+            dispatchGroup.leave()
+            if error != nil {return}
+            guard let responseEntries = response?.feed.entry else {return}
+            self.responseEntries = Array(responseEntries[0...4])
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.collectionView.reloadData()
         }
     }
     
@@ -52,6 +69,8 @@ class AppDetailController: BaseListController {
             return cell
         case 2:
             let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reviewCellId, for: indexPath) as! AppReviewRowCell
+            cell.reviewHorizontalController.reviews = responseEntries
+            cell.reviewHorizontalController.collectionView.reloadData()
             return cell
         default:
             return UICollectionViewCell()
