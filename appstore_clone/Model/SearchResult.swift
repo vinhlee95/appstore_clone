@@ -20,7 +20,7 @@ struct Result: Decodable {
     let artworkUrl100: String
     var screenshotUrls: [String]
     let description: String
-    let formattedPrice: String
-    let releaseNotes: String
+    let formattedPrice: String?
+    let releaseNotes: String?
     let version: String
 }
