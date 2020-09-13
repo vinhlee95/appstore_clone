@@ -16,8 +16,8 @@ class BaseTabBarController: UITabBarController {
     
     fileprivate func setupViewControllers() {
         viewControllers = [
+            setupNavController(viewController: TodayController(), title: "Today", image: #imageLiteral(resourceName: "today_icon")),
             setupNavController(viewController: AppsController(), title: "Apps", image: #imageLiteral(resourceName: "apps")),
-            setupNavController(viewController: UIViewController(), title: "Today", image: #imageLiteral(resourceName: "today_icon")),
             setupNavController(viewController: AppSearchController(), title: "Search", image: #imageLiteral(resourceName: "search"))
         ]
     }
@@ -27,9 +27,14 @@ class BaseTabBarController: UITabBarController {
         viewController.navigationItem.title = title
         
         let navViewController = UINavigationController(rootViewController: viewController)
-        navViewController.navigationBar.prefersLargeTitles = true
         navViewController.tabBarItem.title = title
         navViewController.tabBarItem.image = image
+        
+        if title != "Today" {
+            navViewController.navigationBar.prefersLargeTitles = true
+        } else {
+            navViewController.isNavigationBarHidden = true
+        }
         return navViewController
     }
 }

@@ -35,6 +35,7 @@ class AppsController: BaseListController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        collectionView.backgroundColor = .white
         collectionView.register(AppGroupCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.register(AppSectionHeader.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         setupLoadingIndicator()
