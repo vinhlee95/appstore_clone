@@ -96,8 +96,7 @@ class AppSearchController: UICollectionViewController {
     
     fileprivate func handleNavigateApp(app: Result) {
         guard let appId = app.trackId else {return}
-        let appDetailController = AppDetailController()
-        appDetailController.appId = String(appId)
+        let appDetailController = AppDetailController(appId: String(appId))
         self.navigationController?.navigationBar.prefersLargeTitles = false
         navigationController?.pushViewController(appDetailController, animated: true)
     }
