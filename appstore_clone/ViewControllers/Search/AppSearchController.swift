@@ -79,8 +79,27 @@ class AppSearchController: UICollectionViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        guard indexPath.section == 1 else {return}
-        fetchApps(searchText: discoverTerms[indexPath.item])
+        switch indexPath.section {
+        case 0:
+            handleNavigateApp(app: appResults[indexPath.item])
+            return
+        case 1:
+            fetchApps(searchText: discoverTerms[indexPath.item])
+            return
+        case 2:
+            handleNavigateApp(app: suggestedAppResults[indexPath.item])
+            return
+        default:
+            return
+        }
+    }
+    
+    fileprivate func handleNavigateApp(app: Result) {
+        guard let appId = app.trackId else {return}
+        let appDetailController = AppDetailController()
+        appDetailController.appId = String(appId)
+        self.navigationController?.navigationBar.prefersLargeTitles = false
+        navigationController?.pushViewController(appDetailController, animated: true)
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
