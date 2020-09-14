@@ -34,6 +34,7 @@ class TodayController: BaseListController {
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             redView.frame = self.view.frame
+            self.tabBarController?.tabBar.isHidden = true
         }, completion: nil)
     }
     
@@ -41,6 +42,7 @@ class TodayController: BaseListController {
         guard let originalFrame = self.animatingCellFrame else {return}
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             gesture.view?.frame = originalFrame
+            self.tabBarController?.tabBar.isHidden = false
         }, completion: { _ in
             gesture.view?.removeFromSuperview()
         })
