@@ -10,6 +10,7 @@ import UIKit
 
 class TodayController: BaseListController {
     private let cellId = "cellId"
+    private var animatingCellFrame: CGRect?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -18,7 +19,31 @@ class TodayController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print(indexPath.item)
+        let redView = UIView()
+        redView.backgroundColor = .red
+        redView.layer.cornerRadius = 16
+        redView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleRemoveRedView)))
+        view.addSubview(redView)
+        
+        guard let cell = collectionView.cellForItem(at: indexPath) else {return}
+        
+        // Absolute coordinate of the cell
+        guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else {return}
+        animatingCellFrame = startingFrame
+        redView.frame = startingFrame
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            redView.frame = self.view.frame
+        }, completion: nil)
+    }
+    
+    @objc func handleRemoveRedView(gesture: UITapGestureRecognizer) {
+        guard let originalFrame = self.animatingCellFrame else {return}
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            gesture.view?.frame = originalFrame
+        }, completion: { _ in
+            gesture.view?.removeFromSuperview()
+        })
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
