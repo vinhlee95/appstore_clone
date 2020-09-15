@@ -10,8 +10,12 @@ import UIKit
 
 class TodayController: BaseListController {
     private let cellId = "cellId"
-    private var animatingCellFrame: CGRect?
-    private var appFullScreenController: UIViewController!
+    private var animatingCellFrame: CGRect!
+    private var appFullScreenController: AppFullScreenController!
+    private var topConstraint: NSLayoutConstraint!
+    private var leadingConstraint: NSLayoutConstraint!
+    private var widthConstraint: NSLayoutConstraint!
+    private var heightConstraint: NSLayoutConstraint!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -30,18 +34,35 @@ class TodayController: BaseListController {
         guard let cell = collectionView.cellForItem(at: indexPath) else {return}
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else {return}
         animatingCellFrame = startingFrame
-        appFullScreenView.frame = startingFrame
+        
+        appFullScreenView.translatesAutoresizingMaskIntoConstraints = false
+        topConstraint = appFullScreenView.topAnchor.constraint(equalTo: view.topAnchor, constant: startingFrame.origin.y)
+        leadingConstraint = appFullScreenView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: startingFrame.origin.x)
+        widthConstraint = appFullScreenView.widthAnchor.constraint(equalToConstant: startingFrame.width)
+        heightConstraint = appFullScreenView.heightAnchor.constraint(equalToConstant: startingFrame.height)
+        [topConstraint, leadingConstraint, widthConstraint, heightConstraint].forEach {$0.isActive = true}
+        view.layoutIfNeeded()
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            appFullScreenView.frame = self.view.frame
+            self.topConstraint.constant = 0
+            self.leadingConstraint.constant = 0
+            self.widthConstraint.constant = self.view.frame.width
+            self.heightConstraint.constant = self.view.frame.height
+            self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = true
         }, completion: nil)
     }
     
     @objc func handleRemoveAppFullscreenView(gesture: UITapGestureRecognizer) {
-        guard let originalFrame = self.animatingCellFrame else {return}
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            gesture.view?.frame = originalFrame
+            self.appFullScreenController.tableView.contentOffset = .zero
+            
+            self.topConstraint.constant = self.animatingCellFrame.origin.y
+            self.leadingConstraint.constant = self.animatingCellFrame.origin.x
+            self.widthConstraint.constant = self.animatingCellFrame.width
+            self.heightConstraint.constant = self.animatingCellFrame.height
+            
+            self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = false
         }, completion: { _ in
             gesture.view?.removeFromSuperview()
