@@ -11,6 +11,7 @@ import UIKit
 class TodayController: BaseListController {
     private let cellId = "cellId"
     private var animatingCellFrame: CGRect?
+    private var appFullScreenController: UIViewController!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -19,32 +20,32 @@ class TodayController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let redView = UIView()
-        redView.backgroundColor = .red
-        redView.layer.cornerRadius = 16
-        redView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleRemoveRedView)))
-        view.addSubview(redView)
-        
-        guard let cell = collectionView.cellForItem(at: indexPath) else {return}
+        appFullScreenController = AppFullScreenController()
+        let appFullScreenView = appFullScreenController.view!
+        appFullScreenView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleRemoveAppFullscreenView)))
+        view.addSubview(appFullScreenView)
+        self.addChild(appFullScreenController)
         
         // Absolute coordinate of the cell
+        guard let cell = collectionView.cellForItem(at: indexPath) else {return}
         guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else {return}
         animatingCellFrame = startingFrame
-        redView.frame = startingFrame
+        appFullScreenView.frame = startingFrame
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            redView.frame = self.view.frame
+            appFullScreenView.frame = self.view.frame
             self.tabBarController?.tabBar.isHidden = true
         }, completion: nil)
     }
     
-    @objc func handleRemoveRedView(gesture: UITapGestureRecognizer) {
+    @objc func handleRemoveAppFullscreenView(gesture: UITapGestureRecognizer) {
         guard let originalFrame = self.animatingCellFrame else {return}
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             gesture.view?.frame = originalFrame
             self.tabBarController?.tabBar.isHidden = false
         }, completion: { _ in
             gesture.view?.removeFromSuperview()
+            self.appFullScreenController.removeFromParent()
         })
     }
     

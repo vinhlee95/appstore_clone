@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		1B2D5E1C250F0BDE003D2C36 /* AppFullscreenController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2D5E1B250F0BDE003D2C36 /* AppFullscreenController.swift */; };
+		1B2D5E1E250F177F003D2C36 /* TodayFullScreenDescriptionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B2D5E1D250F177F003D2C36 /* TodayFullScreenDescriptionCell.swift */; };
 		1B57D69B24F4AE0700497C44 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D69A24F4AE0700497C44 /* AppDelegate.swift */; };
 		1B57D69D24F4AE0700497C44 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D69C24F4AE0700497C44 /* SceneDelegate.swift */; };
 		1B57D69F24F4AE0700497C44 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1B57D69E24F4AE0700497C44 /* ViewController.swift */; };
@@ -48,6 +50,8 @@
 
 /* Begin PBXFileReference section */
 		0B03D8AC6C95C7FBCA912E78 /* Pods-appstore_clone.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-appstore_clone.release.xcconfig"; path = "Target Support Files/Pods-appstore_clone/Pods-appstore_clone.release.xcconfig"; sourceTree = "<group>"; };
+		1B2D5E1B250F0BDE003D2C36 /* AppFullscreenController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppFullscreenController.swift; sourceTree = "<group>"; };
+		1B2D5E1D250F177F003D2C36 /* TodayFullScreenDescriptionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodayFullScreenDescriptionCell.swift; sourceTree = "<group>"; };
 		1B57D69724F4AE0700497C44 /* appstore_clone.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = appstore_clone.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1B57D69A24F4AE0700497C44 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1B57D69C24F4AE0700497C44 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -208,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				1B7F303E250E48A00090C019 /* TodayController.swift */,
+				1B2D5E1B250F0BDE003D2C36 /* AppFullscreenController.swift */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -216,6 +221,7 @@
 			isa = PBXGroup;
 			children = (
 				1B7F3041250E499A0090C019 /* TodayCell.swift */,
+				1B2D5E1D250F177F003D2C36 /* TodayFullScreenDescriptionCell.swift */,
 			);
 			path = Today;
 			sourceTree = "<group>";
@@ -402,6 +408,7 @@
 				1B7F3042250E499A0090C019 /* TodayCell.swift in Sources */,
 				1B7C96A025087E64004BCA0E /* AppReviewCell.swift in Sources */,
 				1B71D6C42501EF3300535455 /* SocialApp.swift in Sources */,
+				1B2D5E1C250F0BDE003D2C36 /* AppFullscreenController.swift in Sources */,
 				1B88806124FF3686009B6C0F /* HeaderHorizontalController.swift in Sources */,
 				1B7C969E25087DDB004BCA0E /* AppReviewHorizontalController.swift in Sources */,
 				1B7C9699250725A5004BCA0E /* PreviewImageCell.swift in Sources */,
@@ -428,6 +435,7 @@
 				1B88806324FF3DA4009B6C0F /* AppHeaderCell.swift in Sources */,
 				1B57D6B524F611E500497C44 /* SearchResultCell.swift in Sources */,
 				1B57D6BA24F7524300497C44 /* VerticalStackView.swift in Sources */,
+				1B2D5E1E250F177F003D2C36 /* TodayFullScreenDescriptionCell.swift in Sources */,
 				1B57D69D24F4AE0700497C44 /* SceneDelegate.swift in Sources */,
 				1B57D6B824F6136F00497C44 /* Extensions.swift in Sources */,
 				1B88805B24FC9FFB009B6C0F /* BaseListController.swift in Sources */,
