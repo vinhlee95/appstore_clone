@@ -25,8 +25,10 @@ class TodayController: BaseListController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         appFullScreenController = AppFullScreenController()
+        appFullScreenController.dismissHandler = {
+            self.handleRemoveAppFullscreenView()
+        }
         let appFullScreenView = appFullScreenController.view!
-        appFullScreenView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleRemoveAppFullscreenView)))
         view.addSubview(appFullScreenView)
         self.addChild(appFullScreenController)
         
@@ -53,7 +55,7 @@ class TodayController: BaseListController {
         }, completion: nil)
     }
     
-    @objc func handleRemoveAppFullscreenView(gesture: UITapGestureRecognizer) {
+    @objc func handleRemoveAppFullscreenView() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.appFullScreenController.tableView.contentOffset = .zero
             
@@ -65,7 +67,7 @@ class TodayController: BaseListController {
             self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = false
         }, completion: { _ in
-            gesture.view?.removeFromSuperview()
+            self.appFullScreenController.tableView.removeFromSuperview()
             self.appFullScreenController.removeFromParent()
         })
     }

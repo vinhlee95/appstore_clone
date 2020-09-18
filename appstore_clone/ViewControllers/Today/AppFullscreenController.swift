@@ -9,12 +9,14 @@
 import UIKit
 
 class AppFullScreenController: UITableViewController {
+    var dismissHandler: (() ->())?
     private let cellId = "cellId"
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer.cornerRadius = 16
         tableView.separatorStyle = .none
+        tableView.allowsSelection = false
         tableView.register(TodayFullScreenDescriptionCell.self, forCellReuseIdentifier: cellId)
     }
     
@@ -22,8 +24,13 @@ class AppFullScreenController: UITableViewController {
     // Header
     //
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = TodayCell()
+        let header = TodayHeaderCell()
+        header.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return header
+    }
+    
+    @objc fileprivate func handleDismiss() {
+        dismissHandler?()
     }
     
     override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

@@ -18,7 +18,7 @@ class TodayCell: UICollectionViewCell {
         
         addSubview(imageView)
         imageView.contentMode = .scaleAspectFill
-        imageView.constrainSize(width: 200, height: 200)
+        imageView.constrainSize(width: 250, height: 250)
         imageView.centerXY()
     }
     
