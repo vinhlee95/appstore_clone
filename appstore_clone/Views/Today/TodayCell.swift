@@ -9,17 +9,36 @@
 import UIKit
 
 class TodayCell: UICollectionViewCell {
+    let categoryLabel = UILabel(text: "CATEGORY LABEL", font: .boldSystemFont(ofSize: 20))
+    let titleLabel = UILabel(text: "Title label", font: .boldSystemFont(ofSize: 28))
     let imageView = UIImageView(image: #imageLiteral(resourceName: "garden"))
+    let descriptionLabel = UILabel(text: "Hello world. Hello world. Hello world. Hello world", font: .systemFont(ofSize: 18))
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
         layer.cornerRadius = 12
-        
-        addSubview(imageView)
+    
+        setupViews()
+    }
+    
+    fileprivate func setupViews() {
+        // To make the image view fits with the card layout
+        let imageContainerView = UIImageView()
         imageView.contentMode = .scaleAspectFill
-        imageView.constrainSize(width: 250, height: 250)
+        imageContainerView.addSubview(imageView)
         imageView.centerXY()
+        imageView.constrainSize(width: 200, height: 200)
+        descriptionLabel.numberOfLines = 3
+        
+        let stackView = VerticalStackView(arrangedSubViews: [
+            categoryLabel,
+            titleLabel,
+            imageContainerView,
+            descriptionLabel
+        ])
+        addSubview(stackView)
+        stackView.fillSuperview(padding: .init(top: 16, left: 24, bottom: 16, right: 24))
     }
     
     required init?(coder: NSCoder) {
