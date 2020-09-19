@@ -9,7 +9,17 @@
 import UIKit
 
 class TodayCell: UICollectionViewCell {
-    let categoryLabel = UILabel(text: "CATEGORY LABEL", font: .boldSystemFont(ofSize: 20))
+    var todayItem: TodayItem? {
+        didSet {
+            self.categoryLabel.text = todayItem?.category
+            self.titleLabel.text = todayItem?.title
+            self.descriptionLabel.text = todayItem?.description
+            self.imageView.image = todayItem?.image
+        }
+    }
+    
+    
+    let categoryLabel =  UILabel(text: "CATEGORY LABEL", font: .boldSystemFont(ofSize: 20))
     let titleLabel = UILabel(text: "Title label", font: .boldSystemFont(ofSize: 28))
     let imageView = UIImageView(image: #imageLiteral(resourceName: "garden"))
     let descriptionLabel = UILabel(text: "Hello world. Hello world. Hello world. Hello world", font: .systemFont(ofSize: 18))
@@ -28,7 +38,7 @@ class TodayCell: UICollectionViewCell {
         imageView.contentMode = .scaleAspectFill
         imageContainerView.addSubview(imageView)
         imageView.centerXY()
-        imageView.constrainSize(width: 200, height: 200)
+        imageView.constrainSize(width: 180, height: 180)
         descriptionLabel.numberOfLines = 3
         
         let stackView = VerticalStackView(arrangedSubViews: [

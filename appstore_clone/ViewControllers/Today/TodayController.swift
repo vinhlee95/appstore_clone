@@ -17,6 +17,16 @@ class TodayController: BaseListController {
     private var widthConstraint: NSLayoutConstraint!
     private var heightConstraint: NSLayoutConstraint!
     
+    let items = [
+        TodayItem.init(category: "LIFE HACK", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single),
+
+        TodayItem.init(category: "SECOND CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: .white, cellType: .multiple),
+
+        TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single),
+
+        TodayItem.init(category: "MULTIPLE CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: .white, cellType: .multiple),
+    ]
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = #colorLiteral(red: 0.948936522, green: 0.9490727782, blue: 0.9489068389, alpha: 1)
@@ -25,6 +35,7 @@ class TodayController: BaseListController {
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         appFullScreenController = AppFullScreenController()
+        appFullScreenController.todayItem = items[indexPath.item]
         appFullScreenController.dismissHandler = {
             self.handleRemoveAppFullscreenView()
         }
@@ -78,6 +89,7 @@ class TodayController: BaseListController {
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! TodayCell
+        cell.todayItem = items[indexPath.item]
         return cell
     }
 }

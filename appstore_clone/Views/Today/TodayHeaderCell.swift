@@ -9,7 +9,7 @@
 import UIKit
 
 class TodayHeaderCell: UITableViewCell {
-    private let todayCell = TodayCell()
+    let todayCell = TodayCell()
     
     let closeButton: UIButton = {
         let button = UIButton(type: .system)

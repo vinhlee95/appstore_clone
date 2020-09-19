@@ -11,6 +11,7 @@ import UIKit
 class AppFullScreenController: UITableViewController {
     var dismissHandler: (() ->())?
     private let cellId = "cellId"
+    var todayItem: TodayItem?
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,6 +26,7 @@ class AppFullScreenController: UITableViewController {
     //
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = TodayHeaderCell()
+        header.todayCell.todayItem = self.todayItem
         header.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return header
     }
