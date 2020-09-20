@@ -20,7 +20,7 @@ class TodayController: BaseListController {
     let items = [
         TodayItem.init(category: "LIFE HACK", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single),
 
-        TodayItem.init(category: "SECOND CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: .white, cellType: .multiple),
+        TodayItem.init(category: "SECOND CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .multiple),
 
         TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single),
 
@@ -37,7 +37,7 @@ class TodayController: BaseListController {
         appFullScreenController = AppFullScreenController()
         appFullScreenController.todayItem = items[indexPath.item]
         appFullScreenController.dismissHandler = {
-            self.handleRemoveAppFullscreenView()
+            self.handleDismissAppFullscreen()
         }
         let appFullScreenView = appFullScreenController.view!
         view.addSubview(appFullScreenView)
@@ -63,10 +63,13 @@ class TodayController: BaseListController {
             self.heightConstraint.constant = self.view.frame.height
             self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = true
+            
+            // Increase padding top for the today header cell
+            self.setupHeaderPaddingTop(paddingTop: 60)
         }, completion: nil)
     }
     
-    @objc func handleRemoveAppFullscreenView() {
+    @objc func handleDismissAppFullscreen() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.appFullScreenController.tableView.contentOffset = .zero
             
@@ -77,10 +80,22 @@ class TodayController: BaseListController {
             
             self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = false
+            
+            // Reset padding top for the header cell
+            self.setupHeaderPaddingTop(paddingTop: 24, removingButton: true)
         }, completion: { _ in
             self.appFullScreenController.tableView.removeFromSuperview()
             self.appFullScreenController.removeFromParent()
         })
+    }
+    
+    fileprivate func setupHeaderPaddingTop(paddingTop: CGFloat, removingButton: Bool = false) {
+        guard let todayHeaderCell = self.appFullScreenController.tableView.headerView(forSection: 0) as? TodayFullscreenHeader else {return}
+        todayHeaderCell.todayCell.topConstraint?.constant = paddingTop
+        todayHeaderCell.todayCell.layoutIfNeeded()
+        if removingButton {
+            todayHeaderCell.closeButton.removeFromSuperview()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {

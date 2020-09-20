@@ -9,18 +9,21 @@
 import UIKit
 
 class TodayCell: UICollectionViewCell {
+    var topConstraint: NSLayoutConstraint?
+    
     var todayItem: TodayItem? {
         didSet {
-            self.categoryLabel.text = todayItem?.category
-            self.titleLabel.text = todayItem?.title
-            self.descriptionLabel.text = todayItem?.description
-            self.imageView.image = todayItem?.image
+            categoryLabel.text = todayItem?.category
+            titleLabel.text = todayItem?.title
+            descriptionLabel.text = todayItem?.description
+            imageView.image = todayItem?.image
+            backgroundColor = todayItem?.backgroundColor
         }
     }
     
     
-    let categoryLabel =  UILabel(text: "CATEGORY LABEL", font: .boldSystemFont(ofSize: 20))
-    let titleLabel = UILabel(text: "Title label", font: .boldSystemFont(ofSize: 28))
+    let categoryLabel =  UILabel(text: "CATEGORY LABEL", font: .boldSystemFont(ofSize: 24))
+    let titleLabel = UILabel(text: "Title label", font: .boldSystemFont(ofSize: 24))
     let imageView = UIImageView(image: #imageLiteral(resourceName: "garden"))
     let descriptionLabel = UILabel(text: "Hello world. Hello world. Hello world. Hello world", font: .systemFont(ofSize: 18))
     
@@ -48,7 +51,10 @@ class TodayCell: UICollectionViewCell {
             descriptionLabel
         ])
         addSubview(stackView)
-        stackView.fillSuperview(padding: .init(top: 16, left: 24, bottom: 16, right: 24))
+        stackView.anchor(top: nil, leading: leadingAnchor, bottom: bottomAnchor, trailing: trailingAnchor, paddingTop: 0, paddingLeft: 24, paddingBottom: 16, paddingRight: 24)
+        
+        topConstraint = stackView.topAnchor.constraint(equalTo: topAnchor, constant: 24)
+        topConstraint?.isActive = true
     }
     
     required init?(coder: NSCoder) {

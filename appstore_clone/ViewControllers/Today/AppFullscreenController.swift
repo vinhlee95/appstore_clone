@@ -18,15 +18,18 @@ class AppFullScreenController: UITableViewController {
         view.layer.cornerRadius = 16
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
+        tableView.contentInsetAdjustmentBehavior = .never
         tableView.register(TodayFullScreenDescriptionCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(TodayFullscreenHeader.self, forHeaderFooterViewReuseIdentifier: "headerId")
     }
     
     //
     // Header
     //
     override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = TodayHeaderCell()
+        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "headerId") as! TodayFullscreenHeader
         header.todayCell.todayItem = self.todayItem
+        header.todayCell.layer.cornerRadius = 0
         header.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
         return header
     }
