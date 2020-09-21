@@ -19,7 +19,7 @@ class TodayDailyAppCell: BaseTodayCell {
         }
     }
     
-    let dailyAppListController = UIViewController()
+    let dailyAppListController = DailyAppListController()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
