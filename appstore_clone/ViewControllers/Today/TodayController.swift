@@ -19,12 +19,7 @@ class TodayController: BaseListController {
     
     let items = [
         TodayItem.init(category: "LIFE HACK", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single),
-
-        TodayItem.init(category: "SECOND CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .multiple),
-
         TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single),
-
-        TodayItem.init(category: "MULTIPLE CELL", description: "", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "holiday"), backgroundColor: .white, cellType: .multiple),
     ]
     
     override func viewDidLoad() {
@@ -99,7 +94,7 @@ class TodayController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return items.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -119,6 +114,6 @@ extension TodayController: UICollectionViewDelegateFlowLayout {
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return .init(top: 32, left: 0, bottom: 32, right: 0)
+        return .init(top: 32, left: 0, bottom: 44, right: 0)
     }
 }
