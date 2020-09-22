@@ -15,18 +15,66 @@ class TodayController: BaseListController {
     private var leadingConstraint: NSLayoutConstraint!
     private var widthConstraint: NSLayoutConstraint!
     private var heightConstraint: NSLayoutConstraint!
+    private var getGamesAPI = "https://rss.itunes.apple.com/api/v1/us/ios-apps/new-games-we-love/all/10/explicit.json"
+    private var getFreeAppsAPI = "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/10/explicit.json"
+    private var items = [TodayItem]()
     
-    let items = [
-        TodayItem.init(category: "THE DAILY LIST", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .multiple),
-        TodayItem.init(category: "LIFE HACK", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Utilizing your Time", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single),
-        TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single),
-    ]
+    private let loadingIndicator: UIActivityIndicatorView = {
+        let loading = UIActivityIndicatorView()
+        loading.style = .large
+        loading.color = .gray
+        loading.startAnimating()
+        loading.hidesWhenStopped = true
+        return loading
+    }()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = #colorLiteral(red: 0.948936522, green: 0.9490727782, blue: 0.9489068389, alpha: 1)
         collectionView.register(TodayCell.self, forCellWithReuseIdentifier: TodayItem.CellType.single.rawValue)
         collectionView.register(TodayDailyAppCell.self, forCellWithReuseIdentifier: TodayItem.CellType.multiple.rawValue)
+        setupViews()
+        fetchApps()
+    }
+    
+    fileprivate func setupViews() {
+        collectionView.addSubview(loadingIndicator)
+        loadingIndicator.centerXY()
+    }
+    
+    fileprivate func fetchApps() {
+        var gameGroup: AppFeed?
+        var freeAppsGroup: AppFeed?
+        
+        let dispatchGroup = DispatchGroup()
+        dispatchGroup.enter()
+        NetworkService.shared.fetchAppsByUrl(urlString: getGamesAPI) { (appFeed, error) in
+            dispatchGroup.leave()
+            if error != nil {
+                return
+            }
+            gameGroup = appFeed
+        }
+        
+        dispatchGroup.enter()
+        NetworkService.shared.fetchAppsByUrl(urlString: getFreeAppsAPI) { (appFeed, error) in
+            dispatchGroup.leave()
+            if error != nil {
+                return
+            }
+            freeAppsGroup = appFeed
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            self.loadingIndicator.stopAnimating()
+            self.items = [
+                TodayItem.init(category: "Daily list", description: "All the tools and apps you need to intelligently organize your life the right way.", title: gameGroup?.title ?? "", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .multiple, apps: gameGroup?.results ?? []),
+                TodayItem.init(category: "Daily  list", description: "All the tools and apps you need to intelligently organize your life the right way.", title: freeAppsGroup?.title ?? "", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .multiple, apps: freeAppsGroup?.results ?? []),
+                TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single, apps: []),
+                TodayItem.init(category: "THE DAILY LIST", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single, apps: []),
+            ]
+            self.collectionView.reloadData()
+        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {

@@ -16,6 +16,11 @@ class TodayDailyAppCell: BaseTodayCell {
         didSet {
             categoryLabel.text = todayItem?.category
             titleLabel.text = todayItem?.title
+            guard let appList = todayItem?.apps else {
+                return
+            }
+            let shownIndex = Int(DailyAppListController.self.shownAppAmount - 1)
+            dailyAppListController.appList = Array(appList[0...shownIndex])
         }
     }
     

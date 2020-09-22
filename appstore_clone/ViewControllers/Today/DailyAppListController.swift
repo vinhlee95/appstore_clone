@@ -10,9 +10,8 @@ import UIKit
 
 class DailyAppListController: BaseListController {
     private let cellId = "cellId"
-    private let api = "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/10/explicit.json"
     private let spacing: CGFloat = 16
-    private let shownAppAmount: CGFloat = 4
+    static let shownAppAmount: CGFloat = 4
     
     var appList = [AppFeedResult]()
     
@@ -20,20 +19,6 @@ class DailyAppListController: BaseListController {
         super.viewDidLoad()
         collectionView.backgroundColor = .white
         collectionView.register(DailyAppCell.self, forCellWithReuseIdentifier: cellId)
-        fetchApps()
-    }
-    
-    fileprivate func fetchApps() {
-        NetworkService.shared.fetchAppsByUrl(urlString: api) { (appFeed, error) in
-            if error != nil {
-                return
-            }
-            
-            self.appList = Array(appFeed.results[0...Int(self.shownAppAmount)-1])
-            DispatchQueue.main.async {
-                self.collectionView.reloadData()
-            }
-        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -49,8 +34,8 @@ class DailyAppListController: BaseListController {
 
 extension DailyAppListController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let totalAvailableHeight = view.frame.height - spacing*(shownAppAmount - 1)
-        return .init(width: view.frame.width, height: totalAvailableHeight/shownAppAmount)
+        let totalAvailableHeight = view.frame.height - spacing*(DailyAppListController.self.shownAppAmount - 1)
+        return .init(width: view.frame.width, height: totalAvailableHeight/DailyAppListController.shownAppAmount)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
