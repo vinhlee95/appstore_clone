@@ -78,8 +78,17 @@ class TodayController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let selectedItem = items[indexPath.item]
+        if selectedItem.cellType == .multiple {
+            let dailyAppListController = DailyAppListController(mode: .fullScreen)
+            dailyAppListController.modalPresentationStyle = .fullScreen
+            dailyAppListController.appList = selectedItem.apps
+            present(dailyAppListController, animated: true, completion: nil)
+            return
+        }
+        
         appFullScreenController = AppFullScreenController()
-        appFullScreenController.todayItem = items[indexPath.item]
+        appFullScreenController.todayItem = selectedItem
         appFullScreenController.dismissHandler = {
             self.handleDismissAppFullscreen()
         }

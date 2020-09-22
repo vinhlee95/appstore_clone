@@ -19,12 +19,12 @@ class TodayDailyAppCell: BaseTodayCell {
             guard let appList = todayItem?.apps else {
                 return
             }
-            let shownIndex = Int(DailyAppListController.self.shownAppAmount - 1)
-            dailyAppListController.appList = Array(appList[0...shownIndex])
+//            let shownIndex = Int(DailyAppListController.self.shownAppAmount - 1)
+            dailyAppListController.appList = appList
         }
     }
     
-    let dailyAppListController = DailyAppListController()
+    let dailyAppListController = DailyAppListController(mode: .small)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
