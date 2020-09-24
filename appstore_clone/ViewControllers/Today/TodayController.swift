@@ -81,9 +81,11 @@ class TodayController: BaseListController {
         let selectedItem = items[indexPath.item]
         if selectedItem.cellType == .multiple {
             let dailyAppListController = DailyAppListController(mode: .fullScreen)
-            dailyAppListController.modalPresentationStyle = .fullScreen
             dailyAppListController.appList = selectedItem.apps
-            present(dailyAppListController, animated: true, completion: nil)
+            let navigationController = UINavigationController(rootViewController: dailyAppListController)
+            navigationController.modalPresentationStyle = .fullScreen
+//            navigationController.isNavigationBarHidden = true
+            present(navigationController, animated: true, completion: nil)
             return
         }
         

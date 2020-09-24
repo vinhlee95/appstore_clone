@@ -41,6 +41,13 @@ class DailyAppListController: BaseListController {
         dismiss(animated: true, completion: nil)
     }
     
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("Select", indexPath.item)
+        let appId = appList[indexPath.item].id
+        let appDetailsController = AppDetailController(appId: appId)
+        navigationController?.pushViewController(appDetailsController, animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if mode == .small {
             return Int(DailyAppListController.self.shownAppAmount)
