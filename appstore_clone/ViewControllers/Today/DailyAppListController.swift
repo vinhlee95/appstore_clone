@@ -42,7 +42,6 @@ class DailyAppListController: BaseListController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        print("Select", indexPath.item)
         let appId = appList[indexPath.item].id
         let appDetailsController = AppDetailController(appId: appId)
         navigationController?.pushViewController(appDetailsController, animated: true)
