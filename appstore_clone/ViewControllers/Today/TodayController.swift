@@ -80,12 +80,7 @@ class TodayController: BaseListController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let selectedItem = items[indexPath.item]
         if selectedItem.cellType == .multiple {
-            let dailyAppListController = DailyAppListController(mode: .fullScreen)
-            dailyAppListController.appList = selectedItem.apps
-            let navigationController = BackEnabledNavigationController(rootViewController: dailyAppListController)
-            navigationController.modalPresentationStyle = .fullScreen
-            navigationController.isNavigationBarHidden = true
-            present(navigationController, animated: true, completion: nil)
+            self.presentDailyAppList(appList: selectedItem.apps)
             return
         }
         
@@ -161,7 +156,34 @@ class TodayController: BaseListController {
         let cellData = items[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellData.cellType.rawValue, for: indexPath) as! BaseTodayCell
         cell.todayItem = cellData
+        
+        (cell as? TodayDailyAppCell)?.dailyAppListController.collectionView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(handleSelectAppList)))
+        
         return cell
+    }
+    
+    @objc fileprivate func handleSelectAppList(gesture: UIGestureRecognizer) {
+        let collectionView = gesture.view
+        // Figure out which cell we are clicking to
+        var superView = collectionView?.superview
+        while superView != nil {
+            if let cell = superView as? TodayDailyAppCell {
+                guard let indexPath = self.collectionView.indexPath(for: cell) else {return}
+                self.presentDailyAppList(appList: self.items[indexPath.item].apps)
+                return
+            }
+            
+            superView = superView?.superview
+        }
+    }
+    
+    fileprivate func presentDailyAppList(appList: [AppFeedResult]) {
+        let dailyAppListController = DailyAppListController(mode: .fullScreen)
+        dailyAppListController.appList = appList
+        let navigationController = BackEnabledNavigationController(rootViewController: dailyAppListController)
+        navigationController.modalPresentationStyle = .fullScreen
+        navigationController.isNavigationBarHidden = true
+        present(navigationController, animated: true, completion: nil)
     }
 }
 
