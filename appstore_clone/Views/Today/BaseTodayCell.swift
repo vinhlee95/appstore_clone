@@ -11,6 +11,16 @@ import UIKit
 class BaseTodayCell: UICollectionViewCell {
     var todayItem: TodayItem!
     
+    // Scale animation when the cell is tapped and highlighted
+    override var isHighlighted: Bool {
+        didSet {
+            let transform: CGAffineTransform = isHighlighted ? .init(scaleX: 0.9, y: 0.9) : .identity
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1, initialSpringVelocity: 1, options: .curveEaseOut) {
+                self.transform = transform
+            }
+        }
+    }
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
         layer.cornerRadius = 12
