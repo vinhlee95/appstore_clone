@@ -19,7 +19,6 @@ class TodayDailyAppCell: BaseTodayCell {
             guard let appList = todayItem?.apps else {
                 return
             }
-//            let shownIndex = Int(DailyAppListController.self.shownAppAmount - 1)
             dailyAppListController.appList = appList
         }
     }
@@ -29,7 +28,6 @@ class TodayDailyAppCell: BaseTodayCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         backgroundColor = .white
-        layer.cornerRadius = 12
         setupViews()
     }
     
