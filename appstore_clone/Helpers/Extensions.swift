@@ -8,31 +8,37 @@
 import UIKit
 
 extension UIView {
-    func anchor(top: NSLayoutYAxisAnchor?, leading: NSLayoutXAxisAnchor?, bottom: NSLayoutYAxisAnchor?, trailing: NSLayoutXAxisAnchor?, paddingTop: CGFloat = 0, paddingLeft: CGFloat = 0, paddingBottom: CGFloat = 0, paddingRight: CGFloat = 0, size: CGSize = .zero) {
+    func anchor(top: NSLayoutYAxisAnchor?, leading: NSLayoutXAxisAnchor?, bottom: NSLayoutYAxisAnchor?, trailing: NSLayoutXAxisAnchor?, paddingTop: CGFloat = 0, paddingLeft: CGFloat = 0, paddingBottom: CGFloat = 0, paddingRight: CGFloat = 0, size: CGSize = .zero) -> AnchoredConstraints {
+        var anchoredConstraints = AnchoredConstraints()
         self.translatesAutoresizingMaskIntoConstraints = false
+        
         if let top = top {
-            self.topAnchor.constraint(equalTo: top, constant: paddingTop).isActive = true
+            anchoredConstraints.top = self.topAnchor.constraint(equalTo: top, constant: paddingTop)
         }
         
         if let leading = leading {
-            self.leadingAnchor.constraint(equalTo: leading, constant: paddingLeft).isActive = true
+            anchoredConstraints.leading = self.leadingAnchor.constraint(equalTo: leading, constant: paddingLeft)
         }
         
         if let bottom = bottom {
-            self.bottomAnchor.constraint(equalTo: bottom, constant: -paddingBottom).isActive = true
+            anchoredConstraints.bottom = self.bottomAnchor.constraint(equalTo: bottom, constant: -paddingBottom)
         }
         
         if let trailing = trailing {
-            self.trailingAnchor.constraint(equalTo: trailing, constant: -paddingRight).isActive = true
+            anchoredConstraints.trailing = self.trailingAnchor.constraint(equalTo: trailing, constant: -paddingRight)
         }
         
         if size.width != 0 {
-            self.widthAnchor.constraint(equalToConstant: size.width).isActive = true
+            anchoredConstraints.width = self.widthAnchor.constraint(equalToConstant: size.width)
         }
         
         if size.height != 0 {
-            self.heightAnchor.constraint(equalToConstant: size.height).isActive = true
+            anchoredConstraints.height = self.heightAnchor.constraint(equalToConstant: size.height)
         }
+        
+        [anchoredConstraints.top, anchoredConstraints.leading, anchoredConstraints.bottom, anchoredConstraints.trailing, anchoredConstraints.width, anchoredConstraints.height].forEach {$0?.isActive = true}
+        
+        return anchoredConstraints
     }
     
     func fillSuperview(padding: UIEdgeInsets = .zero) {
@@ -174,4 +180,8 @@ extension UIButton {
             self.layer.cornerRadius = cornerRadius
         }
     }
+}
+
+struct AnchoredConstraints {
+    var top, leading, bottom, trailing, width, height: NSLayoutConstraint?
 }

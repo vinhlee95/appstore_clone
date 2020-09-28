@@ -68,9 +68,9 @@ class TodayController: BaseListController {
         dispatchGroup.notify(queue: .main) {
             self.loadingIndicator.stopAnimating()
             self.items = [
+                TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single, apps: []),
                 TodayItem.init(category: "Daily list", description: "All the tools and apps you need to intelligently organize your life the right way.", title: gameGroup?.title ?? "", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .multiple, apps: gameGroup?.results ?? []),
                 TodayItem.init(category: "Daily  list", description: "All the tools and apps you need to intelligently organize your life the right way.", title: freeAppsGroup?.title ?? "", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .multiple, apps: freeAppsGroup?.results ?? []),
-                TodayItem.init(category: "HOLIDAYS", description: "Find out all you need to know on how to travel without packing everything!", title: "Travel on a Budget", image: #imageLiteral(resourceName: "holiday"), backgroundColor: #colorLiteral(red: 0.9838578105, green: 0.9588007331, blue: 0.7274674177, alpha: 1), cellType: .single, apps: []),
                 TodayItem.init(category: "THE DAILY LIST", description: "All the tools and apps you need to intelligently organize your life the right way.", title: "Test-Drive These CarPlay Apps", image: #imageLiteral(resourceName: "garden"), backgroundColor: .white, cellType: .single, apps: []),
             ]
             self.collectionView.reloadData()
@@ -84,49 +84,17 @@ class TodayController: BaseListController {
             return
         }
         
-        appFullScreenController = AppFullScreenController()
-        appFullScreenController.todayItem = selectedItem
-        appFullScreenController.dismissHandler = {
-            self.handleDismissAppFullscreen()
-        }
-        let appFullScreenView = appFullScreenController.view!
-        view.addSubview(appFullScreenView)
-        self.addChild(appFullScreenController)
-        
-        // Absolute coordinate of the cell
-        guard let cell = collectionView.cellForItem(at: indexPath) else {return}
-        guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else {return}
-        animatingCellFrame = startingFrame
-        
-        appFullScreenView.translatesAutoresizingMaskIntoConstraints = false
-        topConstraint = appFullScreenView.topAnchor.constraint(equalTo: view.topAnchor, constant: startingFrame.origin.y)
-        leadingConstraint = appFullScreenView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: startingFrame.origin.x)
-        widthConstraint = appFullScreenView.widthAnchor.constraint(equalToConstant: startingFrame.width)
-        heightConstraint = appFullScreenView.heightAnchor.constraint(equalToConstant: startingFrame.height)
-        [topConstraint, leadingConstraint, widthConstraint, heightConstraint].forEach {$0.isActive = true}
-        view.layoutIfNeeded()
-        
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
-            self.topConstraint.constant = 0
-            self.leadingConstraint.constant = 0
-            self.widthConstraint.constant = self.view.frame.width
-            self.heightConstraint.constant = self.view.frame.height
-            self.view.layoutIfNeeded()
-            self.tabBarController?.tabBar.isHidden = true
-            
-            // Increase padding top for the today header cell
-            self.setupHeaderPaddingTop(paddingTop: 60)
-        }, completion: nil)
+        presentSingleAppFullscreen(indexPath: indexPath)
     }
     
     @objc func handleDismissAppFullscreen() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.appFullScreenController.tableView.contentOffset = .zero
             
-            self.topConstraint.constant = self.animatingCellFrame.origin.y
-            self.leadingConstraint.constant = self.animatingCellFrame.origin.x
-            self.widthConstraint.constant = self.animatingCellFrame.width
-            self.heightConstraint.constant = self.animatingCellFrame.height
+            self.appFullscreenAnchor?.top?.constant = self.animatingCellFrame.origin.y
+            self.appFullscreenAnchor?.leading?.constant = self.animatingCellFrame.origin.x
+            self.appFullscreenAnchor?.width?.constant = self.animatingCellFrame.width
+            self.appFullscreenAnchor?.height?.constant = self.animatingCellFrame.height
             
             self.view.layoutIfNeeded()
             self.tabBarController?.tabBar.isHidden = false
@@ -184,6 +152,59 @@ class TodayController: BaseListController {
         navigationController.modalPresentationStyle = .fullScreen
         navigationController.isNavigationBarHidden = true
         present(navigationController, animated: true, completion: nil)
+    }
+    
+    fileprivate func setupAppFullscreenController(indexPath: IndexPath) {
+        let selectedItem = items[indexPath.item]
+        appFullScreenController = AppFullScreenController()
+        appFullScreenController.todayItem = selectedItem
+        appFullScreenController.dismissHandler = {
+            self.handleDismissAppFullscreen()
+        }
+    }
+    
+    var appFullscreenAnchor: AnchoredConstraints?
+    
+    fileprivate func setupInitialPosition(indexPath: IndexPath) {
+        let appFullScreenView = appFullScreenController.view!
+        view.addSubview(appFullScreenView)
+        self.addChild(appFullScreenController)
+        
+        // Absolute coordinate of the cell
+        guard let cell = collectionView.cellForItem(at: indexPath) else {return}
+        guard let startingFrame = cell.superview?.convert(cell.frame, to: nil) else {return}
+        animatingCellFrame = startingFrame
+        
+        // Auto layout constraints
+        appFullscreenAnchor = appFullScreenView.anchor(top: view.topAnchor, leading: view.leadingAnchor, bottom: nil, trailing: nil, paddingTop: startingFrame.origin.y, paddingLeft: startingFrame.origin.x, size: .init(width: startingFrame.width, height: startingFrame.height))
+        
+        view.layoutIfNeeded()
+    }
+    
+    fileprivate func animateToFullscreen() {
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
+            self.appFullscreenAnchor?.top?.constant = 0
+            self.appFullscreenAnchor?.leading?.constant = 0
+            self.appFullscreenAnchor?.width?.constant = self.view.frame.width
+            self.appFullscreenAnchor?.height?.constant = self.view.frame.height
+            
+            self.view.layoutIfNeeded()
+            self.tabBarController?.tabBar.isHidden = true
+            
+            // Increase padding top for the today header cell
+            self.setupHeaderPaddingTop(paddingTop: 60)
+        }, completion: nil)
+    }
+    
+    fileprivate func presentSingleAppFullscreen(indexPath: IndexPath) {
+        // Populate individual cell data
+        setupAppFullscreenController(indexPath: indexPath)
+        
+        // Setup initial position for the app fullscreen view
+        setupInitialPosition(indexPath: indexPath)
+        
+        // Animate the AppFullscreenController
+        animateToFullscreen()
     }
 }
 
