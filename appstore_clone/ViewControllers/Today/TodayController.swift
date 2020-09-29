@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TodayController: BaseListController {
+class TodayController: BaseListController, UIGestureRecognizerDelegate {
     private var animatingCellFrame: CGRect!
     private var appFullScreenController: AppFullScreenController!
     private var topConstraint: NSLayoutConstraint!
@@ -28,6 +28,8 @@ class TodayController: BaseListController {
         return loading
     }()
     
+    private let overlayView = UIVisualEffectView(effect: UIBlurEffect(style: .regular))
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         collectionView.backgroundColor = #colorLiteral(red: 0.948936522, green: 0.9490727782, blue: 0.9489068389, alpha: 1)
@@ -40,6 +42,9 @@ class TodayController: BaseListController {
     fileprivate func setupViews() {
         collectionView.addSubview(loadingIndicator)
         loadingIndicator.centerXY()
+        view.addSubview(overlayView)
+        overlayView.fillSuperview()
+        overlayView.alpha = 0
     }
     
     fileprivate func fetchApps() {
@@ -91,6 +96,9 @@ class TodayController: BaseListController {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.appFullScreenController.tableView.contentOffset = .zero
             
+            // Reset transform when dragging down app fullscreen view
+            self.appFullScreenController.view.transform = .identity
+            
             self.appFullscreenAnchor?.top?.constant = self.animatingCellFrame.origin.y
             self.appFullscreenAnchor?.leading?.constant = self.animatingCellFrame.origin.x
             self.appFullscreenAnchor?.width?.constant = self.animatingCellFrame.width
@@ -101,6 +109,8 @@ class TodayController: BaseListController {
             
             // Reset padding top for the header cell
             self.setupHeaderPaddingTop(paddingTop: 24, removingButton: true)
+            
+            self.overlayView.alpha = 0
         }, completion: { _ in
             self.appFullScreenController.tableView.removeFromSuperview()
             self.appFullScreenController.removeFromParent()
@@ -161,7 +171,39 @@ class TodayController: BaseListController {
         appFullScreenController.dismissHandler = {
             self.handleDismissAppFullscreen()
         }
+        
+        // Setup pan gesture
+        let gesture = UIPanGestureRecognizer(target: self, action: #selector(handleDragAppFullscreen))
+        gesture.delegate = self
+        appFullScreenController.view.addGestureRecognizer(gesture)
     }
+    
+    func gestureRecognizer(_ gestureRecognizer: UIGestureRecognizer, shouldRecognizeSimultaneouslyWith otherGestureRecognizer: UIGestureRecognizer) -> Bool {
+        return true
+    }
+    
+    @objc fileprivate func handleDragAppFullscreen(gesture: UIPanGestureRecognizer) {
+        let translation = gesture.translation(in: gesture.view)
+        let scale = max(1 - (translation.y)/100, 0.7)
+        let transform: CGAffineTransform = .init(scaleX: scale, y: scale)
+        
+        if transform.a <= 0.8 {
+            handleDismissAppFullscreen()
+            return
+        }
+        
+        switch gesture.state {
+        case .changed:
+            appFullScreenController.view.transform = transform
+            
+        case .ended:
+            appFullScreenController.view.transform = .init(translationX: 1, y: 1)
+            
+        default:
+            return
+        }
+    }
+    
     
     var appFullscreenAnchor: AnchoredConstraints?
     
@@ -193,6 +235,9 @@ class TodayController: BaseListController {
             
             // Increase padding top for the today header cell
             self.setupHeaderPaddingTop(paddingTop: 60)
+            
+            // Setup overlay view
+            self.overlayView.alpha = 1
         }, completion: nil)
     }
     
