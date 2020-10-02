@@ -18,6 +18,7 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
     private var getGamesAPI = "https://rss.itunes.apple.com/api/v1/us/ios-apps/new-games-we-love/all/10/explicit.json"
     private var getFreeAppsAPI = "https://rss.itunes.apple.com/api/v1/us/ios-apps/top-free/all/10/explicit.json"
     private var items = [TodayItem]()
+    private var isAppFullscreenShown = false
     
     private let loadingIndicator: UIActivityIndicatorView = {
         let loading = UIActivityIndicatorView()
@@ -91,7 +92,7 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
         
         presentSingleAppFullscreen(indexPath: indexPath)
     }
-    
+        
     @objc func handleDismissAppFullscreen() {
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseOut, animations: {
             self.appFullScreenController.tableView.contentOffset = .zero
@@ -111,6 +112,7 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
             self.setupHeaderPaddingTop(paddingTop: 24, removingButton: true)
             
             self.overlayView.alpha = 0
+            self.isAppFullscreenShown = false
         }, completion: { _ in
             self.appFullScreenController.tableView.removeFromSuperview()
             self.appFullScreenController.removeFromParent()
@@ -182,22 +184,36 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
         return true
     }
     
+    var appFullscreenBeginOffset: CGFloat = 0
+    
     @objc fileprivate func handleDragAppFullscreen(gesture: UIPanGestureRecognizer) {
+        self.appFullScreenController.tableView.isScrollEnabled = false
         let translation = gesture.translation(in: gesture.view)
-        let scale = max(1 - (translation.y)/100, 0.7)
-        let transform: CGAffineTransform = .init(scaleX: scale, y: scale)
         
-        if transform.a <= 0.8 {
-            handleDismissAppFullscreen()
-            return
+        if gesture.state == .began {
+            appFullscreenBeginOffset = appFullScreenController.tableView.contentOffset.y
         }
         
+        let offset = translation.y - appFullscreenBeginOffset
+        let scale = max(1 - offset/1000, 0.7)
+        let transform: CGAffineTransform = .init(scaleX: scale, y: scale)
+        
+        if translation.y < 0 || appFullScreenController.tableView.contentOffset.y > 0 {
+            return
+        }
+
         switch gesture.state {
         case .changed:
+            if scale <= 0.7 && isAppFullscreenShown {
+                handleDismissAppFullscreen()
+                return
+            }
             appFullScreenController.view.transform = transform
             
         case .ended:
-            appFullScreenController.view.transform = .init(translationX: 1, y: 1)
+            UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.7, options: .curveEaseIn, animations: {
+                self.appFullScreenController.view.transform = .init(scaleX: 1, y: 1)
+            }, completion: nil)
             
         default:
             return
@@ -238,6 +254,8 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
             
             // Setup overlay view
             self.overlayView.alpha = 1
+            
+            self.isAppFullscreenShown = true
         }, completion: nil)
     }
     
