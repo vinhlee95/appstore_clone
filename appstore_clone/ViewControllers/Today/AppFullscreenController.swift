@@ -14,6 +14,14 @@ class AppFullScreenController: UIViewController, UITableViewDataSource, UITableV
     private let headerId = "headerId"
     var todayItem: TodayItem?
     
+    let closeButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.setImage(#imageLiteral(resourceName: "close_button"), for: .normal)
+        button.constrainSize(width: 28, height: 28)
+        button.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
+        return button
+    }()
+    
     let tableView = UITableView(frame: .zero, style: .plain)
     
     override func viewDidLoad() {
@@ -21,6 +29,7 @@ class AppFullScreenController: UIViewController, UITableViewDataSource, UITableV
         view.layer.cornerRadius = 16
         view.clipsToBounds = true
         setupTableView()
+        setupCloseButton()
     }
     
     fileprivate func setupTableView() {
@@ -35,6 +44,11 @@ class AppFullScreenController: UIViewController, UITableViewDataSource, UITableV
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.register(TodayFullScreenDescriptionCell.self, forCellReuseIdentifier: cellId)
         tableView.register(TodayFullscreenHeader.self, forCellReuseIdentifier: headerId)
+    }
+    
+    fileprivate func setupCloseButton() {
+        view.addSubview(closeButton)
+        closeButton.anchor(top: view.topAnchor, leading: nil, bottom: nil, trailing: view.trailingAnchor, paddingTop: 54, paddingRight: 24)
     }
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -60,7 +74,6 @@ class AppFullScreenController: UIViewController, UITableViewDataSource, UITableV
             let cell = tableView.dequeueReusableCell(withIdentifier: headerId, for: indexPath) as! TodayFullscreenHeader
             cell.todayCell.todayItem = self.todayItem
             cell.todayCell.layer.cornerRadius = 0
-            cell.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
             cell.clipsToBounds = true
             return cell
         }

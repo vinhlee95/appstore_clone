@@ -109,7 +109,10 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
             self.tabBarController?.tabBar.isHidden = false
             
             // Reset padding top for the header cell
-            self.setupHeaderPaddingTop(paddingTop: 24, removingButton: true)
+            self.setupHeaderPaddingTop(paddingTop: 24)
+            
+            // Remove close button
+            self.appFullScreenController.closeButton.alpha = 0
             
             self.overlayView.alpha = 0
             self.isAppFullscreenShown = false
@@ -119,14 +122,10 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
         })
     }
     
-    fileprivate func setupHeaderPaddingTop(paddingTop: CGFloat, removingButton: Bool = false) {
+    fileprivate func setupHeaderPaddingTop(paddingTop: CGFloat) {
         guard let todayHeaderCell = self.appFullScreenController.tableView.cellForRow(at: .init(row: 0, section: 0)) as? TodayFullscreenHeader else {return}
-        
         todayHeaderCell.todayCell.topConstraint?.constant = paddingTop
         todayHeaderCell.todayCell.layoutIfNeeded()
-        if removingButton {
-            todayHeaderCell.closeButton.removeFromSuperview()
-        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
