@@ -187,7 +187,6 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
     var appFullscreenBeginOffset: CGFloat = 0
     
     @objc fileprivate func handleDragAppFullscreen(gesture: UIPanGestureRecognizer) {
-        self.appFullScreenController.tableView.isScrollEnabled = false
         let translation = gesture.translation(in: gesture.view)
         
         if gesture.state == .began {
