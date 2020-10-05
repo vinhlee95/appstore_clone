@@ -8,7 +8,7 @@
 
 import UIKit
 
-class TodayFullscreenHeader: UITableViewHeaderFooterView {
+class TodayFullscreenHeader: UITableViewCell {
     let todayCell = TodayCell()
     
     let closeButton: UIButton = {
@@ -18,8 +18,8 @@ class TodayFullscreenHeader: UITableViewHeaderFooterView {
         return button
     }()
     
-    override init(reuseIdentifier: String?) {
-        super.init(reuseIdentifier: reuseIdentifier)
+    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         addSubview(todayCell)
         todayCell.fillSuperview()
         addSubview(closeButton)

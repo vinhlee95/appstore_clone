@@ -11,6 +11,7 @@ import UIKit
 class AppFullScreenController: UITableViewController {
     var dismissHandler: (() ->())?
     private let cellId = "cellId"
+    private let headerId = "headerId"
     var todayItem: TodayItem?
     
     override func viewDidLoad() {
@@ -20,7 +21,7 @@ class AppFullScreenController: UITableViewController {
         tableView.allowsSelection = false
         tableView.contentInsetAdjustmentBehavior = .never
         tableView.register(TodayFullScreenDescriptionCell.self, forCellReuseIdentifier: cellId)
-        tableView.register(TodayFullscreenHeader.self, forHeaderFooterViewReuseIdentifier: "headerId")
+        tableView.register(TodayFullscreenHeader.self, forCellReuseIdentifier: headerId)
     }
     
     override func scrollViewDidScroll(_ scrollView: UIScrollView) {
@@ -30,35 +31,35 @@ class AppFullScreenController: UITableViewController {
         }
     }
     
-    //
-    // Header
-    //
-    override func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "headerId") as! TodayFullscreenHeader
-        header.todayCell.todayItem = self.todayItem
-        header.todayCell.layer.cornerRadius = 0
-        header.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
-        header.clipsToBounds = true
-        return header
-    }
-    
     @objc fileprivate func handleDismiss() {
         dismissHandler?()
-    }
-    
-    override func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return 450
     }
     
     //
     // Rows
     //
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 1
+        return 2
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if indexPath.row == 0 {
+            let cell = tableView.dequeueReusableCell(withIdentifier: headerId, for: indexPath) as! TodayFullscreenHeader
+            cell.todayCell.todayItem = self.todayItem
+            cell.todayCell.layer.cornerRadius = 0
+            cell.closeButton.addTarget(self, action: #selector(handleDismiss), for: .touchUpInside)
+            cell.clipsToBounds = true
+            return cell
+        }
+        
         let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! TodayFullScreenDescriptionCell
         return cell
+    }
+    
+    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        if indexPath.row == 0 {
+            return TodayController.cellSize
+        }
+        return UITableView.automaticDimension
     }
 }

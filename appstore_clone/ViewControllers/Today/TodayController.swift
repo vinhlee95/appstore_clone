@@ -268,11 +268,13 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
         // Animate the AppFullscreenController
         animateToFullscreen()
     }
+    
+    static let cellSize: CGFloat = 450
 }
 
 extension TodayController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return .init(width: view.frame.width - 64, height: 450)
+        return .init(width: view.frame.width - 64, height: TodayController.cellSize)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
