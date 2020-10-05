@@ -8,15 +8,28 @@
 
 import UIKit
 
-class AppFullScreenController: UITableViewController {
+class AppFullScreenController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     var dismissHandler: (() ->())?
     private let cellId = "cellId"
     private let headerId = "headerId"
     var todayItem: TodayItem?
     
+    let tableView = UITableView(frame: .zero, style: .plain)
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.layer.cornerRadius = 16
+        view.clipsToBounds = true
+        setupTableView()
+    }
+    
+    fileprivate func setupTableView() {
+        // Setup datasource
+        tableView.dataSource = self
+        tableView.delegate = self
+        
+        view.addSubview(tableView)
+        tableView.fillSuperview()
         tableView.separatorStyle = .none
         tableView.allowsSelection = false
         tableView.contentInsetAdjustmentBehavior = .never
@@ -24,7 +37,7 @@ class AppFullScreenController: UITableViewController {
         tableView.register(TodayFullscreenHeader.self, forCellReuseIdentifier: headerId)
     }
     
-    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset.y < 0 {
             scrollView.isScrollEnabled = false
             scrollView.isScrollEnabled = true
@@ -38,11 +51,11 @@ class AppFullScreenController: UITableViewController {
     //
     // Rows
     //
-    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return 2
     }
     
-    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         if indexPath.row == 0 {
             let cell = tableView.dequeueReusableCell(withIdentifier: headerId, for: indexPath) as! TodayFullscreenHeader
             cell.todayCell.todayItem = self.todayItem
@@ -56,7 +69,7 @@ class AppFullScreenController: UITableViewController {
         return cell
     }
     
-    override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if indexPath.row == 0 {
             return TodayController.cellSize
         }

@@ -114,7 +114,7 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
             self.overlayView.alpha = 0
             self.isAppFullscreenShown = false
         }, completion: { _ in
-            self.appFullScreenController.tableView.removeFromSuperview()
+            self.appFullScreenController.view.removeFromSuperview()
             self.appFullScreenController.removeFromParent()
         })
     }
