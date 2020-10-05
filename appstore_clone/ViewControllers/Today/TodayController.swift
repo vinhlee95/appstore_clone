@@ -120,7 +120,8 @@ class TodayController: BaseListController, UIGestureRecognizerDelegate {
     }
     
     fileprivate func setupHeaderPaddingTop(paddingTop: CGFloat, removingButton: Bool = false) {
-        guard let todayHeaderCell = self.appFullScreenController.tableView.headerView(forSection: 0) as? TodayFullscreenHeader else {return}
+        guard let todayHeaderCell = self.appFullScreenController.tableView.cellForRow(at: .init(row: 0, section: 0)) as? TodayFullscreenHeader else {return}
+        
         todayHeaderCell.todayCell.topConstraint?.constant = paddingTop
         todayHeaderCell.todayCell.layoutIfNeeded()
         if removingButton {
